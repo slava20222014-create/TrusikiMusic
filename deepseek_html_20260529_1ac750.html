@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Trusiki Music — Клипы и чарты</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+            background: #0a0a0a;
+            color: #e0e0e0;
+            overflow: hidden;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1a1a1a; }
+        ::-webkit-scrollbar-thumb { background: #e31c25; border-radius: 10px; }
+        .app {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .top-bar {
+            background: rgba(0, 0, 0, 0.96);
+            backdrop-filter: blur(10px);
+            padding: 14px 32px;
+            display: flex;
+            gap: 12px;
+            border-bottom: 1px solid rgba(227, 28, 37, 0.3);
+            z-index: 20;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .nav-group {
+            display: flex;
+            gap: 12px;
+        }
+        .logo {
+            font-weight: 800;
+            font-size: 18px;
+            background: linear-gradient(135deg, #e31c25, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 1px;
+        }
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 10px 24px;
+            border-radius: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+        .nav-btn.active {
+            background: #e31c25;
+            color: white;
+            box-shadow: 0 0 12px rgba(227,28,37,0.5);
+        }
+        .nav-btn:hover:not(.active) {
+            color: white;
+            background: #2a2a2a;
+        }
+        .main-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 28px 36px;
+            background: radial-gradient(circle at 10% 20%, #121212, #000000);
+        }
+        .section-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 5px solid #e31c25;
+            padding-left: 20px;
+        }
+        .track-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 40px;
+        }
+        .track-item {
+            background: rgba(20, 20, 20, 0.8);
+            backdrop-filter: blur(4px);
+            border-radius: 16px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.25s ease;
+            border: 1px solid rgba(255,255,255,0.03);
+            cursor: pointer;
+        }
+        .track-item:hover {
+            background: #1f1f1f;
+            transform: translateX(6px);
+            border-color: rgba(227, 28, 37, 0.4);
+        }
+        .track-info {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            flex: 3;
+        }
+        .track-cover-img {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: #1a1a1a;
+        }
+        .track-position {
+            font-weight: 800;
+            font-size: 20px;
+            min-width: 55px;
+            color: #aaa;
+        }
+        .pos-1 {
+            color: #e31c25;
+            text-shadow: 0 0 4px rgba(227,28,37,0.5);
+            font-size: 26px;
+        }
+        .track-title {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        .artist-names {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .artist-chip {
+            font-size: 13px;
+            color: #b0b0b0;
+            cursor: pointer;
+            transition: color 0.2s;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        .artist-chip:hover {
+            color: #e31c25;
+            text-decoration: underline;
+        }
+        .track-stats {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            color: #e31c25;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .artists-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
+        }
+        .artist-card {
+            background: #111;
+            border-radius: 20px;
+            padding: 20px 16px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #222;
+            position: relative;
+        }
+        .artist-card:hover {
+            transform: translateY(-8px);
+            background: #1a1a1a;
+            border-color: #e31c25;
+            box-shadow: 0 15px 30px rgba(227,28,37,0.2);
+        }
+        .artist-avatar {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 16px;
+            border: 2px solid #e31c25;
+        }
+        .artist-name {
+            font-weight: 800;
+            font-size: 18px;
+        }
+        .back-btn {
+            background: rgba(227,28,37,0.2);
+            border: 1px solid #e31c25;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-bottom: 24px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .back-btn:hover {
+            background: #e31c25;
+        }
+        .artist-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            background: linear-gradient(135deg, #1a1a1a, #080808);
+            padding: 28px;
+            border-radius: 28px;
+            margin-bottom: 32px;
+            border: 1px solid rgba(227,28,37,0.3);
+            flex-wrap: wrap;
+        }
+        .profile-avatar-lg {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #e31c25;
+        }
+        .release-tabs {
+            display: flex;
+            gap: 16px;
+            margin: 20px 0 24px;
+            border-bottom: 1px solid #2a2a2a;
+        }
+        .release-tab {
+            background: none;
+            border: none;
+            color: #aaa;
+            font-weight: 600;
+            padding: 10px 0;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 16px;
+        }
+        .release-tab.active {
+            color: #e31c25;
+            border-bottom: 2px solid #e31c25;
+        }
+        .clips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .clip-card {
+            background: #111;
+            border-radius: 20px;
+            padding: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            border: 1px solid #222;
+            text-align: center;
+        }
+        .clip-card:hover {
+            background: #1f1f1f;
+            border-color: #e31c25;
+            transform: scale(1.02);
+        }
+        .clip-thumb {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #1a1a1a;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: #e31c25;
+            margin-bottom: 12px;
+        }
+        .clip-title {
+            font-weight: bold;
+            margin-top: 8px;
+        }
+        .player-bar {
+            background: #050505;
+            border-top: 1px solid #e31c25;
+            padding: 12px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .player-track {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 200px;
+        }
+        .player-cover {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            object-fit: cover;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .player-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .player-controls {
+            display: flex;
+            gap: 20px;
+        }
+        .ctrl-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .ctrl-btn:hover {
+            color: #e31c25;
+            transform: scale(1.05);
+        }
+        .play-pause-main {
+            background: #e31c25;
+            color: white;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        .progress-section {
+            flex: 2;
+            min-width: 200px;
+        }
+        .progress-bar-bg {
+            background: #2a2a2a;
+            height: 5px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .progress-fill {
+            background: #e31c25;
+            width: 0%;
+            height: 100%;
+            border-radius: 8px;
+        }
+        .time-stamps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+            font-size: 11px;
+            color: #aaa;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+        }
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 900px;
+            background: #000;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(227,28,37,0.5);
+        }
+        .modal-content video {
+            width: 100%;
+            display: block;
+        }
+        .close-modal {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: #e31c25;
+            color: white;
+            border: none;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .toast-msg {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #e31c25;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 13px;
+            font-weight: bold;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        @media (max-width: 750px) {
+            .main-content { padding: 16px; }
+            .artist-profile-header { flex-direction: column; text-align: center; }
+            .top-bar { flex-direction: column; align-items: stretch; gap: 8px; }
+            .nav-group { justify-content: center; }
+            .logo { text-align: center; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="top-bar">
+        <div class="logo"><i class="fas fa-skull"></i> TRUSIKI MUSIC</div>
+        <div class="nav-group">
+            <button class="nav-btn active" data-page="charts"><i class="fas fa-chart-line"></i> Чарты</button>
+            <button class="nav-btn" data-page="artists"><i class="fas fa-microphone-alt"></i> Артисты</button>
+        </div>
+        <div></div>
+    </div>
+    <div class="main-content" id="mainContent"></div>
+    <div class="player-bar">
+        <div class="player-track">
+            <div class="player-cover" id="playerCoverIcon"><i class="fas fa-music"></i></div>
+            <div>
+                <div id="playerTitle" style="font-weight:bold">WERTYUOOP LASHARA</div>
+                <div id="playerArtist" style="font-size:12px; color:#aaa">LASHARA</div>
+            </div>
+        </div>
+        <div class="player-controls">
+            <button class="ctrl-btn" id="prevBtn"><i class="fas fa-backward-step"></i></button>
+            <button class="ctrl-btn play-pause-main" id="playPauseBtn"><i class="fas fa-play"></i></button>
+            <button class="ctrl-btn" id="nextBtn"><i class="fas fa-forward-step"></i></button>
+        </div>
+        <div class="progress-section">
+            <div class="progress-bar-bg" id="progressBarBg">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="time-stamps">
+                <span id="currentTime">0:00</span>
+                <span id="durationTime">0:00</span>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="toastMsg" class="toast-msg">🎧 +1 прослушивание</div>
+
+<div id="videoModal" class="modal">
+    <div class="modal-content">
+        <button class="close-modal" id="closeModalBtn">&times;</button>
+        <video id="modalVideo" controls autoplay></video>
+    </div>
+</div>
+
+<audio id="audioPlayer" preload="metadata"></audio>
+
+<script>
+    // ======================= КЛИПЫ АРТИСТОВ =======================
+    const artistClips = {
+        "s44801140": {
+            url: "https://videotourl.com/videos/1780057681507-5e49826e-899b-438d-be9d-a94116682ea5.mp4",
+            title: "s44801140 — Новый клип"
+        },
+        "yagudya1": {
+            url: "https://videotourl.com/videos/1780059157782-83b4db6e-8505-4601-8cdd-c6d36cff974d.mp4",
+            title: "yagudya1 — Премьера"
+        },
+        "awesomeaudioproducer9521": {
+            url: "https://videotourl.com/videos/1780059304488-2f2c3782-7553-47e3-9a4b-09fdadd6bbcc.mp4",
+            title: "awesomeaudioproducer9521 — Official clip"
+        }
+    };
+
+    // ======================= АВАТАРКИ ТРЕКОВ (добавлена для Homelander Theme Slowed) =======================
+    const trackCovers = {
+        "WERTYUOOP LASHARA": "https://cdn.discordapp.com/attachments/1291442583033348119/1509854044322140231/image_large_cc30e771-2330-4418-bf81-27169fcd384e.png?ex=6a1ab0a7&is=6a195f27&hm=c59c0916277cb83fb5aff12741971134a2d9bb5e90b00068f9a955f01202ae4b&",
+        "WERTYUOOP LASHARA (КАРАОКЕ ВЕРСИЯ)": "https://cdn.discordapp.com/attachments/1291442583033348119/1509863431170297919/image.png?ex=6a1ab965&is=6a1967e5&hm=14e27072e620ed1e2874c41406994c4d5f08e2af067663f2ec6320a687d1c354&",
+        "WERTYUOP LASHARA (АНЕ КУПИ АНЕ КАРОКЕ ВЕРСИЯ)": "https://cdn.discordapp.com/attachments/1291442583033348119/1509864034189443102/image.png?ex=6a1ab9f5&is=6a196875&hm=30c3586b6e17a8c341fad14e8acde19f500ad148bab2a7a853c20794612a0ab8&",
+        "Кароч делаю олд ттд": "https://cdn.discordapp.com/attachments/1291442583033348119/1509863689858056263/image.png?ex=6a1ab9a3&is=6a196823&hm=cd65ba248a65e74c63734a13220b6d7527443e7ca3eab39326d23439248c87d5&",
+        "Биг дилда опять за своё": "https://cdn.discordapp.com/attachments/1291442583033348119/1509863850093318228/image.png?ex=6a1ab9c9&is=6a196849&hm=fef5bccb2e72f7910b97257229ad960636f6badf32261d08edcbfc250b4806bc&",
+        "Кошка бросила котят это ве*ти виноват": "https://cdn.discordapp.com/attachments/1291442583033348119/1509864221137961002/image.png?ex=6a1aba22&is=6a1968a2&hm=cfa076a55feacd9f552e268454ba8873c2dfd3195abbef60929ccc2d945b966c&",
+        "Фубля красава (лох)": "https://cdn.discordapp.com/attachments/1291442583033348119/1509864359533219922/image.png?ex=6a1aba43&is=6a1968c3&hm=48f39873680b6b1e3d3324163dbebd51e7f7df1295716549c52269c7da091242&",
+        "Мам я хочу как Верти": "https://cdn.discordapp.com/attachments/1291442583033348119/1509864472553197588/image.png?ex=6a1aba5e&is=6a1968de&hm=9ca2c9b6fafd2a7616c2b18363deb0b11317077eac6de07352b369f0d22dee43&",
+        "Шан мЫрк рЕп": "https://cdn.discordapp.com/attachments/1291442583033348119/1509864588546412594/image.png?ex=6a1aba79&is=6a1968f9&hm=79d8494eff6a0a6271c910dd1d778d3a321ac0b78e311e548832a5330145761d&",
+        "Верти не пидарок (оригинал)": "https://cdn.discordapp.com/attachments/1291442583033348119/1509864853760905328/image.png?ex=6a1abab9&is=6a196939&hm=bae4c5787edecb4db344646ab958a03ee4e749d1e9f0b64f8a9fa54ece8ee6e3&",
+        "TRusiki SHow": "https://cdn.discordapp.com/attachments/1291442583033348119/1509865053657235637/image.png?ex=6a1abae8&is=6a196968&hm=a09702b6e1cd746b8b5dc1efdd068e84a39f9a8a2cd0d89682403949e8420ded&",
+        "ВСЕ ЛАШАРЫ КРЧ": "https://cdn.discordapp.com/attachments/1291442583033348119/1509865210649903134/image.png?ex=6a1abb0e&is=6a19698e&hm=5d2f2764e384810c66119fe48eef757afc4b2dded1535f970fca741ddade3aa7&",
+        "FYBLIN LASHARA": "https://cdn.discordapp.com/attachments/1291442583033348119/1509865327859732600/image.png?ex=6a1abb2a&is=6a1969aa&hm=7fdc421dbec2d32f993c40e136a863698c7517b0198ecb5df9fb3513e0d8c086&",
+        "Сосал понял": "https://cdn.discordapp.com/attachments/1291442583033348119/1509865438690021417/image.png?ex=6a1abb44&is=6a1969c4&hm=3138bea12734af0c7dc24948f839f122180699ff3a3f3b4cec6d85b0d93ad2fd&",
+        "Лашара": "https://cdn.discordapp.com/attachments/1291442583033348119/1509865539630137374/image.png?ex=6a1abb5c&is=6a1969dc&hm=394de47382e124e9c2509a910ab25a5ea78cd0e091a9ee5ae3850eac9cdaa16b&",
+        "Мам я хочу быть как Фубля": "https://cdn.discordapp.com/attachments/1291442583033348119/1509865718278000781/image.png?ex=6a1abb87&is=6a196a07&hm=d712433a60b90887bc22fd2c53cbeee7857c7cc9177fd0de905b805c6e902a5e&",
+        "Верти жирный": "https://cdn.discordapp.com/attachments/1291442583033348119/1509866010495422534/image.png?ex=6a1abbcc&is=6a196a4c&hm=b395856704a02e2b76a502d752fb5aaa43717c1534e430aaf6e5b73f45d3c807&",
+        "Верти не пидарок (ФУЛЛ)": "https://cdn.discordapp.com/attachments/1291442583033348119/1509866163679789087/image.png?ex=6a1abbf1&is=6a196a71&hm=bc40e29755e1b4ff77913f3ae82729a5383e514f138c87b45a45ed9b0e735dc7&",
+        "Миша пидарок": "https://cdn.discordapp.com/attachments/1291442583033348119/1509866262467973151/image.png?ex=6a1abc08&is=6a196a88&hm=22b57a42abd3d64e4b8e6e970293e9abefb2def5139a712613243eecf2354366&",
+        "Мам я хочу быть как ЮтТрап": "https://cdn.discordapp.com/attachments/1291442583033348119/1509866390880911471/image.png?ex=6a1abc27&is=6a196aa7&hm=790216163054419ffa66613ec843fa1138cd15fca137f9a5cd03d1f73fc86b1f&",
+        "Мам, я хочу быть как Mecha": "https://cdn.discordapp.com/attachments/1291442583033348119/1509866547295031397/image.png?ex=6a1abc4c&is=6a196acc&hm=c2fd6d29e9a7acb0f420d4cda97b9b1f79594aa2573215c92138f3942f508c3a&",
+        "Vам я хочу быть как капздлендер": "https://cdn.discordapp.com/attachments/1291442583033348119/1509866731194028092/image.png?ex=6a1abc78&is=6a196af8&hm=b8c706f6cdddfadf23f998902345bde99ef938499986af46b24ddb098e35c2eb&",
+        "Фублин Жирный Говноед": "https://cdn.discordapp.com/attachments/1291442583033348119/1509868716115099760/image.png?ex=6a1abe51&is=6a196cd1&hm=2954f75a04ad5dca6f301116d2a6bf11e573db6499ca445fc6f198ca5af8ce54&",
+        "Верти, Мифа и ночной шалун": "https://cdn.discordapp.com/attachments/1291442583033348119/1509868834717171825/image.png?ex=6a1abe6e&is=6a196cee&hm=0ade06ec3d708bc0ff77bd3289b88727ff9349e43ff582bcc70f6fb500cbe979&",
+        "Ютб жирный говноед": "https://cdn.discordapp.com/attachments/1291442583033348119/1509868936160870450/image.png?ex=6a1abe86&is=6a196d06&hm=555b662f5b60acda4619a2142546d1fbdd3c1453afec2138f1d6105dc72d4ecc&",
+        "Дай ему": "https://cdn.discordapp.com/attachments/1291442583033348119/1509869043178410064/image.png?ex=6a1abe9f&is=6a196d1f&hm=aaba577ee997294f6b660dc76de8e439fb200352939e781fe083c943fa3af4a6&",
+        "Дисс на Вертижопа": "https://cdn.discordapp.com/attachments/1291442583033348119/1509870812423782530/image.png?ex=6a1ac045&is=6a196ec5&hm=ad6ad5ec15d4cbb012806183edcd8237c08bad89e7e502243d05776a7c209133&",
+        "Дисс на Gugushka": "https://cdn.discordapp.com/attachments/1291442583033348119/1509871010533609614/image.png?ex=6a1ac074&is=6a196ef4&hm=32534bb6f47f0fb790cf7d8faf7dc76919b136403d4f171b4da3c628f8a56c94&",
+        "Мам я хочу быть как Газан (У*бан ремикс)": "https://cdn.discordapp.com/attachments/1291442583033348119/1509871171095756800/image.png?ex=6a1ac09b&is=6a196f1b&hm=5fe4756f22f00f644628526d0d5837fc68ecaca3b26fda4a6b11fdf27f006379&",
+        "Homelander Theme Slowed": "https://cdn.discordapp.com/attachments/1291442583033348119/1509873286891311134/00304a5156aea35159607e81458179a779ae50af8b405450b17666a5afa5afaeb7bfa7917a4a695142a161814a5a71a799416e626a8564b7be4a616e768e81959860f25dfcecb44d8cc2a4d2e4d2b22d23534d3bdce2b2.png?ex=6a1ac293&is=6a197113&hm=0db7632793af8865799b2e4ddd391dbf506df2fbca7e50206574acd7935cebc0&"
+    };
+
+    // АВАТАРКИ АРТИСТОВ
+    const artistAvatars = {
+        "awesomeaudioproducer9521": "https://cdn.discordapp.com/attachments/1291442583033348119/1509889019251527680/photo_2026-05-29_14-59-49.jpg?ex=6a1ad13a&is=6a197fba&hm=ace25cbb54ca793feea66bff1fd071090836fbc726b3f6d8f02c4b4c578d6bca&",
+        "slava20222014": "https://cdn.discordapp.com/attachments/1291442583033348119/1509855427846733895/image.png?ex=6a1ab1f1&is=6a196071&hm=519e389a3816a6e19a356f43cc8c99efdb6dc27a612041607f94a7a6b1b94a3c&",
+        "s44801140": "https://cdn.discordapp.com/attachments/1291442583033348119/1509855118697304216/image.png?ex=6a1ab1a8&is=6a196028&hm=34505b59161aa04265506a187161fea120ec69aef5e0bc58d02cd70fa310816e&",
+        "yagudya1": "https://cdn.discordapp.com/attachments/1291442583033348119/1509853722375884800/2026-04-27_124700.png?ex=6a1ab05b&is=6a195edb&hm=0e9d9c619138ffd5e7205c7b845c17d78b5f62d2d46745d464537aa0ab8ee1f1&",
+        "The Boys": "https://i.pinimg.com/originals/97/6c/9f/976c9f28572614f6975d1609f5590a28.jpg?nii=t"
+    };
+
+    // БАЗА ТРЕКОВ
+    const tracksData = [
+        { id: 1, title: "WERTYUOOP LASHARA", artist: "awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780044349919-52d425e1-34e8-403e-9103-0f33237e42ab.mp3", isMain: true },
+        { id: 2, title: "WERTYUOOP LASHARA (КАРАОКЕ ВЕРСИЯ)", artist: "awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780049081099-ab76be1c-ae47-4dd6-aa15-4c3136aef802.mp3" },
+        { id: 3, title: "WERTYUOP LASHARA (АНЕ КУПИ АНЕ КАРОКЕ ВЕРСИЯ)", artist: "awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780046850744-b52b9f8f-be27-4bd0-aa50-e99b1b9feeaf.mp3" },
+        { id: 4, title: "Фублин Жирный Говноед", artist: "slava20222014", src: "https://videotourl.com/audio/1780044739910-62b1c1fc-9e79-421e-a884-19db10aa0bdd.mp3" },
+        { id: 5, title: "Верти, Мифа и ночной шалун", artist: "slava20222014", src: "https://videotourl.com/audio/1780044800088-b1529841-2413-4a0e-9462-da63445bd825.mp3" },
+        { id: 6, title: "Кошка бросила котят это ве*ти виноват", artist: "s44801140", src: "https://videotourl.com/audio/1780044927313-7c885374-51d4-4e43-bf70-ca36b9e4f85d.mp3" },
+        { id: 7, title: "Фубля красава (лох)", artist: "s44801140", src: "https://videotourl.com/audio/1780045726184-17cca66f-24c9-45e7-9e9d-1860add80c60.mp3" },
+        { id: 8, title: "Ютб жирный говноед", artist: "slava20222014", src: "https://videotourl.com/audio/1780045118583-5e765551-8c0a-459b-ae46-a92bc67a9664.mp3" },
+        { id: 9, title: "Дай ему", artist: "slava20222014", src: "https://videotourl.com/audio/1780045177812-e99691f3-c169-4bbc-a247-06b1de1c8a3f.mp3" },
+        { id: 10, title: "Homelander Theme Slowed", artist: "The Boys", src: "https://videotourl.com/audio/1780045235383-8f5946b4-493d-4f90-9e84-3f95d06e1cd4.mp3" },
+        { id: 11, title: "Дисс на Вертижопа", artist: "slava20222014", src: "https://videotourl.com/audio/1780045295637-58834b82-bbaa-49c9-9b73-f88dc242122b.mp3" },
+        { id: 12, title: "Дисс на Gugushka", artist: "slava20222014", src: "https://videotourl.com/audio/1780045371684-3171d7ed-2559-4e83-a0b7-73ffcf77c11c.mp3" },
+        { id: 13, title: "Мам я хочу быть как Фубля", artist: "yagudya1", src: "https://videotourl.com/audio/1780045435916-08f91cad-f02c-417b-8a1c-f7394f4431ac.mp3" },
+        { id: 14, title: "Мам я хочу как Верти", artist: "s44801140", src: "https://videotourl.com/audio/1780045519014-6661112e-3567-46bd-a285-0271e208a879.mp3" },
+        { id: 15, title: "Кароч делаю олд ттд", artist: "awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780045572086-84b6c466-d6e6-490a-aa53-48bb86bad513.mp3" },
+        { id: 16, title: "Биг дилда опять за своё", artist: "awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780045608888-f9eba355-a3ff-41b3-913c-73c4efeab292.mp3" },
+        { id: 17, title: "Мам я хочу быть как Газан (У*бан ремикс)", artist: "slava20222014", src: "https://videotourl.com/audio/1780045687684-870d2d56-34d6-4c8a-a83a-ebcbde9248e8.mp3" },
+        { id: 18, title: "Верти жирный", artist: "yagudya1", src: "https://videotourl.com/audio/1780046489771-3c84f6cc-996f-41c3-aecc-87faaaacabb6.mp3" },
+        { id: 19, title: "Шан мЫрк рЕп", artist: "s44801140", src: "https://videotourl.com/audio/1780046552982-66a74e4b-e23e-44d3-aa7f-216ac0b815c7.mp3" },
+        { id: 20, title: "Верти не пидарок (ФУЛЛ)", artist: "yagudya1", src: "https://videotourl.com/audio/1780046603839-84112118-eeea-483d-a516-66937364ae83.mp3" },
+        { id: 21, title: "Миша пидарок", artist: "yagudya1", src: "https://videotourl.com/audio/1780046692611-88ee2b02-59b7-42a0-875f-ae58c4b6d028.mp3" },
+        { id: 22, title: "Верти не пидарок (оригинал)", artist: "s44801140", src: "https://videotourl.com/audio/1780046656986-92f2a9bc-99cc-4f7d-82f1-9a2e52222af1.mp3" },
+        { id: 23, title: "Мам я хочу быть как ЮтТрап", artist: "yagudya1", src: "https://videotourl.com/audio/1780046735783-3e6d712f-9b8a-4833-a6b9-720b7a32d05d.mp3" },
+        { id: 24, title: "Мам, я хочу быть как Mecha", artist: "yagudya1", src: "https://videotourl.com/audio/1780046769383-a0d1520c-011c-404a-9055-2e236fd09ce0.mp3" },
+        { id: 25, title: "Vам я хочу быть как капздлендер", artist: "yagudya1", src: "https://videotourl.com/audio/1780046803085-c0ab1a3e-d23f-4e81-b060-761609eb61df.mp3" },
+        { id: 26, title: "TRusiki SHow", artist: "s44801140", src: "https://videotourl.com/audio/1780046942918-00a66eb2-453f-47a9-840d-aee46de5def9.mp3" },
+        { id: 27, title: "ВСЕ ЛАШАРЫ КРЧ", artist: "s44801140", src: "https://videotourl.com/audio/1780046973701-f092df2d-4fdb-431b-9371-954814a6e243.mp3" },
+        { id: 28, title: "FYBLIN LASHARA", artist: "s44801140", src: "https://videotourl.com/audio/1780047018021-98a30134-57cd-4fd2-a959-5b934d575086.mp3" },
+        { id: 29, title: "Сосал понял", artist: "s44801140", src: "https://videotourl.com/audio/1780047053112-79ea80a8-0923-446b-8200-e7f1c72d8440.mp3" },
+        { id: 30, title: "Лашара", artist: "s44801140", src: "https://videotourl.com/audio/1780047088484-04ec16ff-ee3c-419a-89e6-45c2e60737e9.mp3" },
+        { id: 31, title: "WERTYUOOP LASHARA (GEMER REMIX)", artist: "slava20222014, awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780047179958-ec0bfdab-e73e-4bf7-ba1e-e5cf3042bc16.mp3", album: "WERTYUOOP LASHARA REMIXES" },
+        { id: 32, title: "Вертитоп лошара (фолк)", artist: "s44801140, awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780047254614-bb2fdfda-92cf-47aa-872c-c588f17a8a60.mp3", album: "WERTYUOOP LASHARA REMIXES" },
+        { id: 33, title: "Вертитоп лошара (Шансон)", artist: "s44801140, awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780047283691-1a1eaa06-f232-4905-834d-a885afc9b44b.mp3", album: "WERTYUOOP LASHARA REMIXES" },
+        { id: 34, title: "Вертитоп лошара (Classic Version)", artist: "s44801140, awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780047336485-e64ceb75-fe82-4e92-b694-cacb51a0475b.mp3", album: "WERTYUOOP LASHARA REMIXES" }
+    ];
+
+    // localStorage plays
+    let playsMap = new Map();
+    function loadPlays() {
+        const saved = localStorage.getItem('trusiki_plays');
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                playsMap = new Map(Object.entries(parsed).map(([k, v]) => [parseInt(k), v]));
+            } catch(e) {}
+        }
+        tracksData.forEach(track => { if (!playsMap.has(track.id)) playsMap.set(track.id, 0); });
+        savePlays();
+    }
+    function savePlays() {
+        const obj = {};
+        playsMap.forEach((v, k) => obj[k] = v);
+        localStorage.setItem('trusiki_plays', JSON.stringify(obj));
+    }
+    function incrementPlays(trackId) {
+        playsMap.set(trackId, (playsMap.get(trackId) || 0) + 1);
+        savePlays();
+        const toast = document.getElementById('toastMsg');
+        toast.style.opacity = '1';
+        setTimeout(() => toast.style.opacity = '0', 1200);
+        if (document.querySelector('.nav-btn.active')?.innerText.includes('Чарты')) renderCharts();
+    }
+    function getTrackWithPlays(track) { return { ...track, plays: playsMap.get(track.id) || 0 }; }
+    function getAllTracksWithPlays() { return tracksData.map(t => getTrackWithPlays(t)); }
+    function getAllArtists() {
+        const set = new Set();
+        tracksData.forEach(t => t.artist.split(',').map(a => a.trim()).forEach(a => set.add(a)));
+        return Array.from(set);
+    }
+    function getTracksByArtist(artistName) {
+        return tracksData.filter(t => t.artist.split(',').map(a => a.trim()).includes(artistName)).map(t => getTrackWithPlays(t));
+    }
+
+    // Плеер с обложкой
+    let isPlaying = false;
+    let currentTrackId = 1;
+    const audio = document.getElementById('audioPlayer');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const playerCoverIcon = document.getElementById('playerCoverIcon');
+    
+    function updatePlayerCover(trackTitle) {
+        const coverUrl = trackCovers[trackTitle];
+        if (coverUrl) {
+            playerCoverIcon.innerHTML = `<img src="${coverUrl}" alt="cover">`;
+        } else {
+            playerCoverIcon.innerHTML = `<i class="fas fa-music"></i>`;
+        }
+    }
+    
+    function playTrackById(trackId) {
+        const track = tracksData.find(t => t.id == trackId);
+        if (!track) return;
+        currentTrackId = track.id;
+        audio.src = track.src;
+        document.getElementById('playerTitle').innerText = track.title;
+        document.getElementById('playerArtist').innerText = track.artist.split(',')[0].trim();
+        updatePlayerCover(track.title);
+        audio.play().catch(e => console.log);
+        isPlaying = true;
+        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        incrementPlays(track.id);
+    }
+    
+    function togglePlayPause() {
+        if (!audio.src) { playTrackById(1); return; }
+        if (isPlaying) { audio.pause(); playPauseBtn.innerHTML = '<i class="fas fa-play"></i>'; }
+        else { audio.play(); playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>'; }
+        isPlaying = !isPlaying;
+    }
+    function nextTrack() { let n = currentTrackId + 1; if (n > tracksData.length) n = 1; playTrackById(n); }
+    function prevTrack() { let p = currentTrackId - 1; if (p < 1) p = tracksData.length; playTrackById(p); }
+
+    // Modal logic
+    const modal = document.getElementById('videoModal');
+    const modalVideo = document.getElementById('modalVideo');
+    function openClip(url) {
+        if (!url) return;
+        modalVideo.src = url;
+        modal.style.display = 'flex';
+        modalVideo.play().catch(e => console.log);
+    }
+    function closeModal() {
+        modalVideo.pause();
+        modalVideo.src = '';
+        modal.style.display = 'none';
+    }
+    document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+    window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+    // Рендеры
+    function renderCharts() {
+        const sorted = getAllTracksWithPlays().sort((a,b) => b.plays - a.plays);
+        let html = `<div class="section-title"><i class="fas fa-fire"></i> Реальный Топ</div><div class="track-list">`;
+        sorted.forEach((track, idx) => {
+            const pos = idx+1;
+            const cover = trackCovers[track.title] || "https://cdn.discordapp.com/attachments/1291442583033348119/1509854044322140231/image_large_cc30e771-2330-4418-bf81-27169fcd384e.png?ex=6a1ab0a7&is=6a195f27&hm=c59c0916277cb83fb5aff12741971134a2d9bb5e90b00068f9a955f01202ae4b&";
+            const artistsHtml = `<div class="artist-names">${track.artist.split(',').map(a => `<button class="artist-chip" data-artist="${a.trim()}">${a.trim()}</button>`).join(', ')}</div>`;
+            html += `<div class="track-item" data-track-id="${track.id}"><div class="track-info"><img class="track-cover-img" src="${cover}"><span class="track-position ${pos===1?'pos-1':''}">${pos===1?'🥇':pos}</span><div><div class="track-title">${track.title}</div>${artistsHtml}</div></div><div class="track-stats"><i class="fas fa-headphones"></i> ${track.plays}</div></div>`;
+        });
+        html += `</div>`;
+        document.getElementById('mainContent').innerHTML = html;
+        attachEvents();
+    }
+
+    function renderArtists() {
+        const artists = getAllArtists();
+        let html = `<div class="section-title"><i class="fas fa-users"></i> Все артисты</div><div class="artists-grid">`;
+        artists.forEach(artist => {
+            const avatar = artistAvatars[artist] || "https://cdn.discordapp.com/attachments/1291442583033348119/1509854044322140231/image_large_cc30e771-2330-4418-bf81-27169fcd384e.png?ex=6a1ab0a7&is=6a195f27&hm=c59c0916277cb83fb5aff12741971134a2d9bb5e90b00068f9a955f01202ae4b&";
+            html += `<div class="artist-card" data-artist="${artist}">
+                        <img class="artist-avatar" src="${avatar}">
+                        <div class="artist-name">${artist}</div>
+                    </div>`;
+        });
+        html += `</div>`;
+        document.getElementById('mainContent').innerHTML = html;
+        document.querySelectorAll('.artist-card').forEach(card => {
+            card.addEventListener('click', () => showArtistProfile(card.dataset.artist));
+        });
+    }
+
+    function showArtistProfile(artistName) {
+        const artistTracks = getTracksByArtist(artistName);
+        const singles = artistTracks.filter(t => !t.album);
+        const albums = [...new Set(artistTracks.filter(t => t.album).map(t => t.album))];
+        const hasClips = !!artistClips[artistName];
+        
+        let html = `<button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i> Назад</button>
+                    <div class="artist-profile-header">
+                        <img class="profile-avatar-lg" src="${artistAvatars[artistName] || "https://cdn.discordapp.com/attachments/1291442583033348119/1509854044322140231/image_large_cc30e771-2330-4418-bf81-27169fcd384e.png?ex=6a1ab0a7&is=6a195f27&hm=c59c0916277cb83fb5aff12741971134a2d9bb5e90b00068f9a955f01202ae4b&"}">
+                        <div><h1 style="font-size:34px">${artistName}</h1><p>${artistTracks.length} треков</p></div>
+                    </div>
+                    <div class="release-tabs">
+                        <button class="release-tab active" data-type="singles">Релизы</button>
+                        ${albums.length ? `<button class="release-tab" data-type="albums">Альбомы</button>` : ''}
+                        ${hasClips ? `<button class="release-tab" data-type="clips">Клипы</button>` : ''}
+                    </div>
+                    <div id="releaseContainer"></div>`;
+        document.getElementById('mainContent').innerHTML = html;
+        
+        function showSingles() {
+            let list = `<div class="track-list">`;
+            singles.forEach(t => {
+                const cover = trackCovers[t.title] || "https://cdn.discordapp.com/attachments/1291442583033348119/1509854044322140231/image_large_cc30e771-2330-4418-bf81-27169fcd384e.png?ex=6a1ab0a7&is=6a195f27&hm=c59c0916277cb83fb5aff12741971134a2d9bb5e90b00068f9a955f01202ae4b&";
+                list += `<div class="track-item" data-track-id="${t.id}"><div class="track-info"><img class="track-cover-img" src="${cover}"><div><div class="track-title">${t.title}</div></div></div><div class="track-stats"><i class="fas fa-play-circle"></i> ${t.plays}</div></div>`;
+            });
+            list += `</div>`;
+            document.getElementById('releaseContainer').innerHTML = list;
+            attachEvents();
+        }
+        
+        function showAlbums() {
+            let albumHtml = `<div class="artists-grid">`;
+            albums.forEach(alb => {
+                albumHtml += `<div class="artist-card" data-album="${alb}"><img class="track-cover-img" src="https://cdn.discordapp.com/attachments/1291442583033348119/1509854044322140231/image_large_cc30e771-2330-4418-bf81-27169fcd384e.png?ex=6a1ab0a7&is=6a195f27&hm=c59c0916277cb83fb5aff12741971134a2d9bb5e90b00068f9a955f01202ae4b&" style="width:100px;height:100px;margin:0 auto 12px;border-radius:20px;"><div class="artist-name">${alb}</div></div>`;
+            });
+            albumHtml += `</div>`;
+            document.getElementById('releaseContainer').innerHTML = albumHtml;
+            document.querySelectorAll('[data-album]').forEach(el => {
+                el.addEventListener('click', () => {
+                    const albumName = el.dataset.album;
+                    const albumTracks = tracksData.filter(t => t.album === albumName).map(t => getTrackWithPlays(t));
+                    let tracksHtml = `<div class="track-list">`;
+                    albumTracks.forEach(tr => {
+                        const cover = trackCovers[tr.title] || "https://cdn.discordapp.com/attachments/1291442583033348119/1509854044322140231/image_large_cc30e771-2330-4418-bf81-27169fcd384e.png?ex=6a1ab0a7&is=6a195f27&hm=c59c0916277cb83fb5aff12741971134a2d9bb5e90b00068f9a955f01202ae4b&";
+                        tracksHtml += `<div class="track-item" data-track-id="${tr.id}"><div class="track-info"><img class="track-cover-img" src="${cover}"><div><div class="track-title">${tr.title}</div><div class="artist-names">${tr.artist.split(',').map(a => `<span class="artist-chip" data-artist="${a.trim()}">${a.trim()}</span>`).join(', ')}</div></div></div></div>`;
+                    });
+                    tracksHtml += `</div><button class="back-btn" id="backToProfile" style="margin-top:20px">← К артисту</button>`;
+                    document.getElementById('releaseContainer').innerHTML = tracksHtml;
+                    attachEvents();
+                    document.getElementById('backToProfile')?.addEventListener('click', () => showArtistProfile(artistName));
+                });
+            });
+        }
+        
+        function showClips() {
+            const clip = artistClips[artistName];
+            if (!clip) return;
+            let clipsHtml = `<div class="clips-grid">
+                <div class="clip-card" data-url="${clip.url}">
+                    <div class="clip-thumb"><i class="fas fa-video"></i></div>
+                    <div class="clip-title">${clip.title}</div>
+                </div>
+            </div>`;
+            document.getElementById('releaseContainer').innerHTML = clipsHtml;
+            document.querySelectorAll('.clip-card').forEach(card => {
+                card.addEventListener('click', () => openClip(card.dataset.url));
+            });
+        }
+        
+        showSingles();
+        document.querySelectorAll('.release-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.release-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                if (tab.dataset.type === 'singles') showSingles();
+                else if (tab.dataset.type === 'albums') showAlbums();
+                else if (tab.dataset.type === 'clips') showClips();
+            });
+        });
+        document.getElementById('backBtn')?.addEventListener('click', renderArtists);
+        attachEvents();
+    }
+
+    function attachEvents() {
+        document.querySelectorAll('.track-item').forEach(el => {
+            el.addEventListener('click', (e) => { e.stopPropagation(); const id = el.dataset.trackId; if (id) playTrackById(parseInt(id)); });
+        });
+        document.querySelectorAll('.artist-chip').forEach(btn => {
+            btn.addEventListener('click', (e) => { e.stopPropagation(); const artist = btn.dataset.artist; if (artist) showArtistProfile(artist); });
+        });
+    }
+
+    // Навигация
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            if (btn.dataset.page === 'charts') renderCharts();
+            if (btn.dataset.page === 'artists') renderArtists();
+        });
+    });
+
+    audio.addEventListener('timeupdate', () => {
+        if (audio.duration) {
+            const percent = (audio.currentTime / audio.duration) * 100;
+            document.getElementById('progressFill').style.width = `${percent}%`;
+            let curMin = Math.floor(audio.currentTime / 60);
+            let curSec = Math.floor(audio.currentTime % 60);
+            document.getElementById('currentTime').innerText = `${curMin}:${curSec < 10 ? '0'+curSec : curSec}`;
+            let durMin = Math.floor(audio.duration / 60);
+            let durSec = Math.floor(audio.duration % 60);
+            document.getElementById('durationTime').innerText = `${durMin}:${durSec < 10 ? '0'+durSec : durSec}`;
+        }
+    });
+    document.getElementById('progressBarBg').addEventListener('click', (e) => {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const percent = (e.clientX - rect.left) / rect.width;
+        if (audio.duration) audio.currentTime = percent * audio.duration;
+    });
+    playPauseBtn.addEventListener('click', togglePlayPause);
+    document.getElementById('prevBtn').addEventListener('click', prevTrack);
+    document.getElementById('nextBtn').addEventListener('click', nextTrack);
+    audio.addEventListener('ended', nextTrack);
+
+    loadPlays();
+    renderCharts();
+</script>
+</body>
+</html>
