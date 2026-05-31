@@ -677,39 +677,76 @@
         { id: 34, title: "Вертитоп лошара (Classic Version)", artist: "s44801140, awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780047336485-e64ceb75-fe82-4e92-b694-cacb51a0475b.mp3", album: "WERTYUOOP LASHARA REMIXES" }
     ];
 
-    // localStorage plays
-    let playsMap = new Map();
-    function loadPlays() {
-        const saved = localStorage.getItem('trusiki_plays');
+    // =============== ГЛОБАЛЬНОЕ ХРАНИЛИЩЕ ПРОСЛУШИВАНИЙ (единое для всех) ===============
+    // Используем статический объект, который будет синхронизироваться через localStorage
+    let globalPlaysMap = new Map();
+    
+    // Функция загрузки прослушиваний (все пользователи видят одно и то же)
+    function loadGlobalPlays() {
+        const saved = localStorage.getItem('trusiki_global_plays');
         if (saved) {
             try {
                 const parsed = JSON.parse(saved);
-                playsMap = new Map(Object.entries(parsed).map(([k, v]) => [parseInt(k), v]));
+                globalPlaysMap = new Map(Object.entries(parsed).map(([k, v]) => [parseInt(k), v]));
             } catch(e) {}
         }
-        tracksData.forEach(track => { if (!playsMap.has(track.id)) playsMap.set(track.id, 0); });
-        savePlays();
+        // Инициализируем нулями для всех треков, если их нет
+        tracksData.forEach(track => {
+            if (!globalPlaysMap.has(track.id)) {
+                globalPlaysMap.set(track.id, 0);
+            }
+        });
+        saveGlobalPlays();
     }
-    function savePlays() {
+    
+    // Функция сохранения прослушиваний в глобальное хранилище
+    function saveGlobalPlays() {
         const obj = {};
-        playsMap.forEach((v, k) => obj[k] = v);
-        localStorage.setItem('trusiki_plays', JSON.stringify(obj));
+        globalPlaysMap.forEach((v, k) => obj[k] = v);
+        localStorage.setItem('trusiki_global_plays', JSON.stringify(obj));
     }
+    
+    // Функция увеличения прослушиваний (для всех пользователей)
     function incrementPlays(trackId) {
-        playsMap.set(trackId, (playsMap.get(trackId) || 0) + 1);
-        savePlays();
+        const currentPlays = globalPlaysMap.get(trackId) || 0;
+        globalPlaysMap.set(trackId, currentPlays + 1);
+        saveGlobalPlays();
+        
+        // Показываем уведомление
         const toast = document.getElementById('toastMsg');
         toast.style.opacity = '1';
         setTimeout(() => toast.style.opacity = '0', 1200);
-        if (document.querySelector('.nav-btn.active')?.innerText.includes('Чарты')) renderCharts();
+        
+        // Обновляем отображение чартов, если они сейчас открыты
+        const activePage = document.querySelector('.nav-btn.active')?.dataset.page;
+        if (activePage === 'charts') {
+            renderCharts();
+        } else if (activePage === 'artists') {
+            // Если открыт артист, нужно обновить его профиль (чтобы обновились цифры прослушиваний)
+            const currentArtistName = window.currentArtistName;
+            if (currentArtistName) {
+                showArtistProfile(currentArtistName, true); // true = не перезаписывать history
+            } else {
+                renderArtists();
+            }
+        }
     }
-    function getTrackWithPlays(track) { return { ...track, plays: playsMap.get(track.id) || 0 }; }
-    function getAllTracksWithPlays() { return tracksData.map(t => getTrackWithPlays(t)); }
+    
+    // Вспомогательная функция получения трека с прослушиваниями (глобальными)
+    function getTrackWithPlays(track) { 
+        return { ...track, plays: globalPlaysMap.get(track.id) || 0 }; 
+    }
+    
+    function getAllTracksWithPlays() { 
+        return tracksData.map(t => getTrackWithPlays(t)); 
+    }
+    
     function getAllArtists() {
         const set = new Set();
         tracksData.forEach(t => t.artist.split(',').map(a => a.trim()).forEach(a => set.add(a)));
         return Array.from(set);
     }
+    
     function getTracksByArtist(artistName) {
         return tracksData.filter(t => t.artist.split(',').map(a => a.trim()).includes(artistName)).map(t => getTrackWithPlays(t));
     }
@@ -741,6 +778,7 @@
         audio.play().catch(e => console.log);
         isPlaying = true;
         playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+        // Увеличиваем глобальный счетчик прослушиваний
         incrementPlays(track.id);
     }
     
@@ -803,7 +841,13 @@
         });
     }
 
-    function showArtistProfile(artistName) {
+    // Глобальная переменная для хранения текущего артиста (чтобы обновлять профиль без потери истории)
+    window.currentArtistName = null;
+    
+    function showArtistProfile(artistName, skipHistory = false) {
+        if (!skipHistory) {
+            window.currentArtistName = artistName;
+        }
         const artistTracks = getTracksByArtist(artistName);
         const singles = artistTracks.filter(t => !t.album);
         const albums = [...new Set(artistTracks.filter(t => t.album).map(t => t.album))];
@@ -882,7 +926,10 @@
                 else if (tab.dataset.type === 'clips') showClips();
             });
         });
-        document.getElementById('backBtn')?.addEventListener('click', renderArtists);
+        document.getElementById('backBtn')?.addEventListener('click', () => {
+            window.currentArtistName = null;
+            renderArtists();
+        });
         attachEvents();
     }
 
@@ -900,8 +947,14 @@
         btn.addEventListener('click', () => {
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            if (btn.dataset.page === 'charts') renderCharts();
-            if (btn.dataset.page === 'artists') renderArtists();
+            if (btn.dataset.page === 'charts') {
+                window.currentArtistName = null;
+                renderCharts();
+            }
+            if (btn.dataset.page === 'artists') {
+                window.currentArtistName = null;
+                renderArtists();
+            }
         });
     });
 
@@ -927,7 +980,8 @@
     document.getElementById('nextBtn').addEventListener('click', nextTrack);
     audio.addEventListener('ended', nextTrack);
 
-    loadPlays();
+    // Инициализация глобального хранилища и запуск
+    loadGlobalPlays();
     renderCharts();
 </script>
 </body>
