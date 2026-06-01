@@ -38,7 +38,6 @@
             overflow: hidden;
         }
 
-        /* Верхняя навигация */
         .top-bar {
             background: rgba(0, 0, 0, 0.96);
             backdrop-filter: blur(14px);
@@ -75,20 +74,21 @@
         .nav-group {
             display: flex;
             gap: 12px;
+            flex-wrap: wrap;
         }
 
         .nav-btn {
             background: transparent;
             border: none;
             color: #bbbbbb;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 600;
-            padding: 8px 26px;
+            padding: 8px 20px;
             border-radius: 40px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
 
@@ -103,7 +103,6 @@
             color: white;
         }
 
-        /* основной контент */
         .main-content {
             flex: 1;
             overflow-y: auto;
@@ -122,7 +121,6 @@
             padding-left: 20px;
         }
 
-        /* трек-лист */
         .track-list {
             display: flex;
             flex-direction: column;
@@ -218,7 +216,31 @@
             font-size: 0.9rem;
         }
 
-        /* сетка артистов */
+        .track-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .fav-btn {
+            background: none;
+            border: none;
+            color: #aaa;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 6px;
+        }
+
+        .fav-btn:hover {
+            color: #e31c25;
+            transform: scale(1.1);
+        }
+
+        .fav-btn.active {
+            color: #e31c25;
+        }
+
         .artists-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -238,6 +260,7 @@
             flex-direction: column;
             align-items: center;
             word-break: break-word;
+            position: relative;
         }
 
         .artist-card:hover {
@@ -267,50 +290,113 @@
             line-height: 1.3;
         }
 
-        .back-btn {
-            background: rgba(227, 28, 37, 0.2);
-            border: 1px solid #e31c25;
-            color: white;
-            padding: 8px 24px;
-            border-radius: 40px;
-            font-weight: 600;
-            cursor: pointer;
-            margin-bottom: 28px;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: 0.2s;
-        }
-
-        .back-btn:hover {
+        .artist-follow-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
             background: #e31c25;
-            box-shadow: 0 2px 12px rgba(227,28,37,0.6);
+            color: white;
+            border-radius: 20px;
+            padding: 4px 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
         }
 
-        .artist-profile-header {
+        .artist-hero {
+            position: relative;
+            height: 380px;
+            border-radius: 28px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .artist-banner {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .artist-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4));
+            display: flex;
+            align-items: flex-end;
+            padding: 30px;
+        }
+
+        .artist-main {
             display: flex;
             align-items: center;
-            gap: 36px;
-            background: linear-gradient(125deg, #141414, #050505);
-            padding: 28px 32px;
-            border-radius: 32px;
-            margin-bottom: 32px;
-            border: 1px solid rgba(227, 28, 37, 0.4);
+            gap: 24px;
             flex-wrap: wrap;
         }
 
-        .profile-avatar-lg {
-            width: 150px;
-            height: 150px;
+        .artist-avatar-big {
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
             object-fit: cover;
-            border: 3px solid #e31c25;
+            border: 4px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+
+        .artist-info h1 {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 16px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            background: linear-gradient(135deg, #fff, #e31c25);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .artist-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .follow-btn, .listen-btn {
+            border: none;
+            padding: 10px 24px;
+            border-radius: 40px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .follow-btn {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .listen-btn {
+            background: #e31c25;
+            color: white;
+            box-shadow: 0 4px 12px rgba(227, 28, 37, 0.4);
+        }
+
+        .follow-btn:hover, .listen-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .follow-btn.following {
+            background: #e31c25;
+            border-color: #e31c25;
         }
 
         .release-tabs {
             display: flex;
             gap: 24px;
-            margin-bottom: 28px;
+            margin: 28px 0 24px 0;
             border-bottom: 1px solid #2c2c2c;
             flex-wrap: wrap;
         }
@@ -324,11 +410,21 @@
             cursor: pointer;
             font-size: 1rem;
             transition: 0.2s;
+            position: relative;
         }
 
         .release-tab.active {
             color: #e31c25;
-            border-bottom: 2px solid #e31c25;
+        }
+
+        .release-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e31c25;
         }
 
         .clips-grid {
@@ -366,7 +462,6 @@
             color: #e31c25;
         }
 
-        /* плеер внизу */
         .player-bar {
             background: #030303;
             border-top: 1px solid #e31c25;
@@ -522,15 +617,44 @@
             white-space: nowrap;
         }
 
+        .back-btn {
+            background: rgba(227, 28, 37, 0.2);
+            border: 1px solid #e31c25;
+            color: white;
+            padding: 8px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 28px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #e31c25;
+            box-shadow: 0 2px 12px rgba(227,28,37,0.6);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+            font-size: 1.1rem;
+        }
+
         @media (max-width: 700px) {
             .main-content { padding: 18px; }
             .top-bar { flex-direction: column; align-items: stretch; padding: 10px 18px; }
             .nav-group { justify-content: center; }
-            .artist-profile-header { flex-direction: column; text-align: center; }
+            .artist-hero { height: 280px; }
+            .artist-main { flex-direction: column; align-items: center; text-align: center; }
+            .artist-info h1 { font-size: 28px; }
+            .artist-avatar-big { width: 100px; height: 100px; }
             .player-bar { padding: 12px 16px; gap: 12px; }
             .track-position { min-width: 40px; font-size: 1.1rem; }
             .artists-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
-            .artist-name { font-size: 0.85rem; }
         }
     </style>
 </head>
@@ -538,11 +662,14 @@
 <div class="app">
     <div class="top-bar">
         <div class="logo">
+            <i class="fas fa-music"></i>
             <span>TRUSIKI MUSIC</span>
         </div>
         <div class="nav-group">
             <button class="nav-btn active" data-page="charts"><i class="fas fa-chart-simple"></i> Чарты</button>
             <button class="nav-btn" data-page="artists"><i class="fas fa-microphone-alt"></i> Артисты</button>
+            <button class="nav-btn" data-page="subscriptions"><i class="fas fa-bell"></i> Подписки</button>
+            <button class="nav-btn" data-page="library"><i class="fas fa-library"></i> Моя музыка</button>
         </div>
         <div></div>
     </div>
@@ -581,23 +708,7 @@
 <audio id="audioPlayer" preload="metadata"></audio>
 
 <script>
-    // ======================= КЛИПЫ ДЛЯ АРТИСТОВ =======================
-    const artistClips = {
-        "s44801140": {
-            url: "https://videotourl.com/videos/1780057681507-5e49826e-899b-438d-be9d-a94116682ea5.mp4",
-            title: "s44801140 — Новый клип"
-        },
-        "yagudya1": {
-            url: "https://videotourl.com/videos/1780059157782-83b4db6e-8505-4601-8cdd-c6d36cff974d.mp4",
-            title: "yagudya1 — Премьера"
-        },
-        "awesomeaudioproducer9521": {
-            url: "https://videotourl.com/videos/1780059304488-2f2c3782-7553-47e3-9a4b-09fdadd6bbcc.mp4",
-            title: "awesomeaudioproducer9521 — Official clip"
-        }
-    };
-
-    // ======================= АВАТАРКИ ТРЕКОВ =======================
+    // ======================= АВАТАРКИ ТРЕКОВ (из вашего кода) =======================
     const trackCovers = {
         "WERTYUOOP LASHARA": "images/wertyuoop_lashara.png",
         "WERTYUOOP LASHARA (КАРАОКЕ ВЕРСИЯ)": "images/Снимок экрана 2026-05-29 131815.png",
@@ -639,9 +750,17 @@
         "yagudya1": "images/gugun.png"
     };
 
+    // КЛИПЫ
+    const artistClips = {
+        "awesomeaudioproducer9521": { url: "https://videotourl.com/videos/1780059304488-2f2c3782-7553-47e3-9a4b-09fdadd6bbcc.mp4", title: "Official clip" },
+        "s44801140": { url: "https://videotourl.com/videos/1780057681507-5e49826e-899b-438d-be9d-a94116682ea5.mp4", title: "Новый клип" },
+        "yagudya1": { url: "https://videotourl.com/videos/1780059157782-83b4db6e-8505-4601-8cdd-c6d36cff974d.mp4", title: "Премьера" },
+        "slava20222014": { url: "https://videotourl.com/videos/1780059304488-2f2c3782-7553-47e3-9a4b-09fdadd6bbcc.mp4", title: "Новый клип" }
+    };
+
     // БАЗА ТРЕКОВ
     const tracksData = [
-        { id: 1, title: "WERTYUOOP LASHARA", artist: "awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780044349919-52d425e1-34e8-403e-9103-0f33237e42ab.mp3", isMain: true },
+        { id: 1, title: "WERTYUOOP LASHARA", artist: "awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780044349919-52d425e1-34e8-403e-9103-0f33237e42ab.mp3" },
         { id: 2, title: "WERTYUOOP LASHARA (КАРАОКЕ ВЕРСИЯ)", artist: "awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780049081099-ab76be1c-ae47-4dd6-aa15-4c3136aef802.mp3" },
         { id: 3, title: "WERTYUOP LASHARA (АНЕ КУПИ АНЕ КАРОКЕ ВЕРСИЯ)", artist: "awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780046850744-b52b9f8f-be27-4bd0-aa50-e99b1b9feeaf.mp3" },
         { id: 4, title: "Фублин Жирный Говноед", artist: "slava20222014", src: "https://videotourl.com/audio/1780044739910-62b1c1fc-9e79-421e-a884-19db10aa0bdd.mp3" },
@@ -670,18 +789,17 @@
         { id: 27, title: "ВСЕ ЛАШАРЫ КРЧ", artist: "s44801140", src: "https://videotourl.com/audio/1780046973701-f092df2d-4fdb-431b-9371-954814a6e243.mp3" },
         { id: 28, title: "FYBLIN LASHARA", artist: "s44801140", src: "https://videotourl.com/audio/1780047018021-98a30134-57cd-4fd2-a959-5b934d575086.mp3" },
         { id: 29, title: "Сосал понял", artist: "s44801140", src: "https://videotourl.com/audio/1780047053112-79ea80a8-0923-446b-8200-e7f1c72d8440.mp3" },
-        { id: 30, title: "Лашара", artist: "s44801140", src: "https://videotourl.com/audio/1780047088484-04ec16ff-ee3c-419a-89e6-45c2e60737e9.mp3" },
-        { id: 31, title: "WERTYUOOP LASHARA (GEMER REMIX)", artist: "slava20222014, awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780047179958-ec0bfdab-e73e-4bf7-ba1e-e5cf3042bc16.mp3", album: "WERTYUOOP LASHARA REMIXES" },
-        { id: 32, title: "Вертитоп лошара (фолк)", artist: "s44801140, awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780047254614-bb2fdfda-92cf-47aa-872c-c588f17a8a60.mp3", album: "WERTYUOOP LASHARA REMIXES" },
-        { id: 33, title: "Вертитоп лошара (Шансон)", artist: "s44801140, awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780047283691-1a1eaa06-f232-4905-834d-a885afc9b44b.mp3", album: "WERTYUOOP LASHARA REMIXES" },
-        { id: 34, title: "Вертитоп лошара (Classic Version)", artist: "s44801140, awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780047336485-e64ceb75-fe82-4e92-b694-cacb51a0475b.mp3", album: "WERTYUOOP LASHARA REMIXES" }
+        { id: 30, title: "Лашара", artist: "s44801140", src: "https://videotourl.com/audio/1780047088484-04ec16ff-ee3c-419a-89e6-45c2e60737e9.mp3" }
     ];
 
-    // =============== ГЛОБАЛЬНОЕ ХРАНИЛИЩЕ ПРОСЛУШИВАНИЙ (единое для всех) ===============
-    // Используем статический объект, который будет синхронизироваться через localStorage
+    // =============== ХРАНИЛИЩА ===============
     let globalPlaysMap = new Map();
-    
-    // Функция загрузки прослушиваний (все пользователи видят одно и то же)
+    let favoriteTracks = JSON.parse(localStorage.getItem('favoriteTracks') || '[]');
+    let followingArtists = JSON.parse(localStorage.getItem('followingArtists') || '[]');
+
+    function saveFavorites() { localStorage.setItem('favoriteTracks', JSON.stringify(favoriteTracks)); }
+    function saveFollowed() { localStorage.setItem('followingArtists', JSON.stringify(followingArtists)); }
+
     function loadGlobalPlays() {
         const saved = localStorage.getItem('trusiki_global_plays');
         if (saved) {
@@ -690,83 +808,74 @@
                 globalPlaysMap = new Map(Object.entries(parsed).map(([k, v]) => [parseInt(k), v]));
             } catch(e) {}
         }
-        // Инициализируем нулями для всех треков, если их нет
-        tracksData.forEach(track => {
-            if (!globalPlaysMap.has(track.id)) {
-                globalPlaysMap.set(track.id, 0);
-            }
-        });
+        tracksData.forEach(track => { if (!globalPlaysMap.has(track.id)) globalPlaysMap.set(track.id, 0); });
         saveGlobalPlays();
     }
-    
-    // Функция сохранения прослушиваний в глобальное хранилище
     function saveGlobalPlays() {
         const obj = {};
         globalPlaysMap.forEach((v, k) => obj[k] = v);
         localStorage.setItem('trusiki_global_plays', JSON.stringify(obj));
     }
-    
-    // Функция увеличения прослушиваний (для всех пользователей)
     function incrementPlays(trackId) {
-        const currentPlays = globalPlaysMap.get(trackId) || 0;
-        globalPlaysMap.set(trackId, currentPlays + 1);
+        globalPlaysMap.set(trackId, (globalPlaysMap.get(trackId) || 0) + 1);
         saveGlobalPlays();
-        
-        // Показываем уведомление
         const toast = document.getElementById('toastMsg');
         toast.style.opacity = '1';
         setTimeout(() => toast.style.opacity = '0', 1200);
-        
-        // Обновляем отображение чартов, если они сейчас открыты
         const activePage = document.querySelector('.nav-btn.active')?.dataset.page;
-        if (activePage === 'charts') {
-            renderCharts();
-        } else if (activePage === 'artists') {
-            // Если открыт артист, нужно обновить его профиль (чтобы обновились цифры прослушиваний)
-            const currentArtistName = window.currentArtistName;
-            if (currentArtistName) {
-                showArtistProfile(currentArtistName, true); // true = не перезаписывать history
-            } else {
-                renderArtists();
-            }
-        }
+        if (activePage === 'charts') renderCharts();
+        else if (activePage === 'library') renderLibrary();
+        else if (activePage === 'subscriptions') renderSubscriptions();
     }
-    
-    // Вспомогательная функция получения трека с прослушиваниями (глобальными)
-    function getTrackWithPlays(track) { 
-        return { ...track, plays: globalPlaysMap.get(track.id) || 0 }; 
-    }
-    
-    function getAllTracksWithPlays() { 
-        return tracksData.map(t => getTrackWithPlays(t)); 
-    }
-    
+    function getTrackWithPlays(track) { return { ...track, plays: globalPlaysMap.get(track.id) || 0 }; }
+    function getAllTracksWithPlays() { return tracksData.map(t => getTrackWithPlays(t)); }
     function getAllArtists() {
         const set = new Set();
         tracksData.forEach(t => t.artist.split(',').map(a => a.trim()).forEach(a => set.add(a)));
         return Array.from(set);
     }
-    
     function getTracksByArtist(artistName) {
         return tracksData.filter(t => t.artist.split(',').map(a => a.trim()).includes(artistName)).map(t => getTrackWithPlays(t));
     }
+    function toggleFavorite(trackId, btnElement) {
+        if (favoriteTracks.includes(trackId)) {
+            favoriteTracks = favoriteTracks.filter(id => id !== trackId);
+            btnElement.innerHTML = '<i class="far fa-heart"></i>';
+            btnElement.classList.remove('active');
+        } else {
+            favoriteTracks.push(trackId);
+            btnElement.innerHTML = '<i class="fas fa-heart"></i>';
+            btnElement.classList.add('active');
+        }
+        saveFavorites();
+    }
+    function toggleFollowArtist(artistName, btnElement) {
+        if (followingArtists.includes(artistName)) {
+            followingArtists = followingArtists.filter(a => a !== artistName);
+            btnElement.innerHTML = '<i class="fas fa-plus"></i> Подписаться';
+            btnElement.classList.remove('following');
+        } else {
+            followingArtists.push(artistName);
+            btnElement.innerHTML = '<i class="fas fa-check"></i> Подписан';
+            btnElement.classList.add('following');
+        }
+        saveFollowed();
+        const activePage = document.querySelector('.nav-btn.active')?.dataset.page;
+        if (activePage === 'subscriptions') renderSubscriptions();
+        else if (activePage === 'artists') renderArtists();
+    }
 
-    // Плеер с обложкой
+    // Плеер
     let isPlaying = false;
     let currentTrackId = 1;
     const audio = document.getElementById('audioPlayer');
     const playPauseBtn = document.getElementById('playPauseBtn');
     const playerCoverIcon = document.getElementById('playerCoverIcon');
-    
     function updatePlayerCover(trackTitle) {
         const coverUrl = trackCovers[trackTitle];
-        if (coverUrl) {
-            playerCoverIcon.innerHTML = `<img src="${coverUrl}" alt="cover">`;
-        } else {
-            playerCoverIcon.innerHTML = `<i class="fas fa-headphones" style="font-size: 28px; color:#e31c25;"></i>`;
-        }
+        if (coverUrl) playerCoverIcon.innerHTML = `<img src="${coverUrl}" alt="cover" onerror="this.parentElement.innerHTML='<i class=\'fas fa-headphones\' style=\'font-size:28px;color:#e31c25;\'></i>'">`;
+        else playerCoverIcon.innerHTML = `<i class="fas fa-headphones" style="font-size: 28px; color:#e31c25;"></i>`;
     }
-    
     function playTrackById(trackId) {
         const track = tracksData.find(t => t.id == trackId);
         if (!track) return;
@@ -778,10 +887,8 @@
         audio.play().catch(e => console.log);
         isPlaying = true;
         playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-        // Увеличиваем глобальный счетчик прослушиваний
         incrementPlays(track.id);
     }
-    
     function togglePlayPause() {
         if (!audio.src) { playTrackById(1); return; }
         if (isPlaying) { audio.pause(); playPauseBtn.innerHTML = '<i class="fas fa-play"></i>'; }
@@ -791,33 +898,55 @@
     function nextTrack() { let n = currentTrackId + 1; if (n > tracksData.length) n = 1; playTrackById(n); }
     function prevTrack() { let p = currentTrackId - 1; if (p < 1) p = tracksData.length; playTrackById(p); }
 
-    // Modal logic
+    // Модалка
     const modal = document.getElementById('videoModal');
     const modalVideo = document.getElementById('modalVideo');
-    function openClip(url) {
-        if (!url) return;
-        modalVideo.src = url;
-        modal.style.display = 'flex';
-        modalVideo.play().catch(e => console.log);
-    }
-    function closeModal() {
-        modalVideo.pause();
-        modalVideo.src = '';
-        modal.style.display = 'none';
-    }
+    function openClip(url) { if (!url) return; modalVideo.src = url; modal.style.display = 'flex'; modalVideo.play().catch(e => console.log); }
+    function closeModal() { modalVideo.pause(); modalVideo.src = ''; modal.style.display = 'none'; }
     document.getElementById('closeModalBtn').addEventListener('click', closeModal);
     window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
     // Рендеры
+    function renderTrackItem(track, showPlays = true, showFavorite = true) {
+        const cover = trackCovers[track.title] || "https://via.placeholder.com/52";
+        const isFav = favoriteTracks.includes(track.id);
+        return `<div class="track-item" data-track-id="${track.id}">
+            <div class="track-info">
+                <img class="track-cover-img" src="${cover}" onerror="this.src='https://via.placeholder.com/52'">
+                <div>
+                    <div class="track-title">${track.title}</div>
+                    <div class="artist-names">${track.artist.split(',').map(a => `<button class="artist-chip" data-artist="${a.trim()}">${a.trim()}</button>`).join(', ')}</div>
+                </div>
+            </div>
+            <div class="track-actions">
+                ${showPlays ? `<div class="track-stats"><i class="fas fa-headphones"></i> ${track.plays}</div>` : ''}
+                ${showFavorite ? `<button class="fav-btn ${isFav ? 'active' : ''}" data-fav="${track.id}"><i class="${isFav ? 'fas' : 'far'} fa-heart"></i></button>` : ''}
+            </div>
+        </div>`;
+    }
+
     function renderCharts() {
         const sorted = getAllTracksWithPlays().sort((a,b) => b.plays - a.plays);
         let html = `<div class="section-title"><i class="fas fa-fire"></i> Реальный Топ</div><div class="track-list">`;
         sorted.forEach((track, idx) => {
             const pos = idx+1;
-            const cover = trackCovers[track.title] || "https://cdn.discordapp.com/attachments/1291442583033348119/1509854044322140231/image_large_cc30e771-2330-4418-bf81-27169fcd384e.png?ex=6a1ab0a7&is=6a195f27&hm=c59c0916277cb83fb5aff12741971134a2d9bb5e90b00068f9a955f01202ae4b&";
-            const artistsHtml = `<div class="artist-names">${track.artist.split(',').map(a => `<button class="artist-chip" data-artist="${a.trim()}">${a.trim()}</button>`).join(', ')}</div>`;
             const medal = pos === 1 ? '<i class="fas fa-crown"></i> ' : (pos === 2 ? '<i class="fas fa-medal"></i> ' : (pos === 3 ? '<i class="fas fa-star"></i> ' : ''));
-            html += `<div class="track-item" data-track-id="${track.id}"><div class="track-info"><img class="track-cover-img" src="${cover}"><span class="track-position ${pos===1?'pos-1':''}">${medal}${pos}</span><div><div class="track-title">${track.title}</div>${artistsHtml}</div></div><div class="track-stats"><i class="fas fa-headphones"></i> ${track.plays}</div></div>`;
+            const cover = trackCovers[track.title] || "https://via.placeholder.com/52";
+            const isFav = favoriteTracks.includes(track.id);
+            html += `<div class="track-item" data-track-id="${track.id}">
+                <div class="track-info">
+                    <img class="track-cover-img" src="${cover}" onerror="this.src='https://via.placeholder.com/52'">
+                    <span class="track-position ${pos===1?'pos-1':''}">${medal}${pos}</span>
+                    <div>
+                        <div class="track-title">${track.title}</div>
+                        <div class="artist-names">${track.artist.split(',').map(a => `<button class="artist-chip" data-artist="${a.trim()}">${a.trim()}</button>`).join(', ')}</div>
+                    </div>
+                </div>
+                <div class="track-actions">
+                    <div class="track-stats"><i class="fas fa-headphones"></i> ${track.plays}</div>
+                    <button class="fav-btn ${isFav ? 'active' : ''}" data-fav="${track.id}"><i class="${isFav ? 'fas' : 'far'} fa-heart"></i></button>
+                </div>
+            </div>`;
         });
         html += `</div>`;
         document.getElementById('mainContent').innerHTML = html;
@@ -828,9 +957,11 @@
         const artists = getAllArtists();
         let html = `<div class="section-title"><i class="fas fa-users"></i> Все артисты</div><div class="artists-grid">`;
         artists.forEach(artist => {
-            const avatar = artistAvatars[artist] || "https://cdn.discordapp.com/attachments/1291442583033348119/1509854044322140231/image_large_cc30e771-2330-4418-bf81-27169fcd384e.png?ex=6a1ab0a7&is=6a195f27&hm=c59c0916277cb83fb5aff12741971134a2d9bb5e90b00068f9a955f01202ae4b&";
+            const avatar = artistAvatars[artist] || "https://via.placeholder.com/120";
+            const isFollowing = followingArtists.includes(artist);
             html += `<div class="artist-card" data-artist="${artist}">
-                        <img class="artist-avatar" src="${avatar}">
+                        ${isFollowing ? '<div class="artist-follow-badge"><i class="fas fa-check"></i></div>' : ''}
+                        <img class="artist-avatar" src="${avatar}" onerror="this.src='https://via.placeholder.com/120'">
                         <div class="artist-name">${artist}</div>
                     </div>`;
         });
@@ -841,75 +972,101 @@
         });
     }
 
-    // Глобальная переменная для хранения текущего артиста (чтобы обновлять профиль без потери истории)
-    window.currentArtistName = null;
-    
-    function showArtistProfile(artistName, skipHistory = false) {
-        if (!skipHistory) {
-            window.currentArtistName = artistName;
+    function renderSubscriptions() {
+        if (followingArtists.length === 0) {
+            document.getElementById('mainContent').innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>У вас пока нет подписок<br><small>Подпишитесь на артистов на вкладке "Артисты"</small></div>`;
+            return;
         }
+        let html = `<div class="section-title"><i class="fas fa-bell"></i> Ваши подписки</div><div class="artists-grid">`;
+        followingArtists.forEach(artist => {
+            const avatar = artistAvatars[artist] || "https://via.placeholder.com/120";
+            html += `<div class="artist-card" data-artist="${artist}">
+                        <img class="artist-avatar" src="${avatar}" onerror="this.src='https://via.placeholder.com/120'">
+                        <div class="artist-name">${artist}</div>
+                    </div>`;
+        });
+        html += `</div>`;
+        document.getElementById('mainContent').innerHTML = html;
+        document.querySelectorAll('.artist-card').forEach(card => {
+            card.addEventListener('click', () => showArtistProfile(card.dataset.artist));
+        });
+    }
+
+    function renderLibrary() {
+        const favTracks = tracksData.filter(t => favoriteTracks.includes(t.id)).map(t => getTrackWithPlays(t));
+        if (favTracks.length === 0) {
+            document.getElementById('mainContent').innerHTML = `<div class="empty-state"><i class="fas fa-heart-broken" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>Нет добавленных треков<br><small>Добавляйте треки в избранное ❤️</small></div>`;
+            return;
+        }
+        let html = `<div class="section-title"><i class="fas fa-library"></i> Моя музыка (${favTracks.length})</div><div class="track-list">`;
+        favTracks.forEach(track => {
+            html += renderTrackItem(track, true, true);
+        });
+        html += `</div>`;
+        document.getElementById('mainContent').innerHTML = html;
+        attachEvents();
+    }
+
+    function showArtistProfile(artistName) {
         const artistTracks = getTracksByArtist(artistName);
         const singles = artistTracks.filter(t => !t.album);
-        const albums = [...new Set(artistTracks.filter(t => t.album).map(t => t.album))];
         const hasClips = !!artistClips[artistName];
+        const isFollowing = followingArtists.includes(artistName);
+        const avatarUrl = artistAvatars[artistName] || "https://via.placeholder.com/130";
         
-        let html = `<button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i> Назад</button>
-                    <div class="artist-profile-header">
-                        <img class="profile-avatar-lg" src="${artistAvatars[artistName] || "https://cdn.discordapp.com/attachments/1291442583033348119/1509854044322140231/image_large_cc30e771-2330-4418-bf81-27169fcd384e.png?ex=6a1ab0a7&is=6a195f27&hm=c59c0916277cb83fb5aff12741971134a2d9bb5e90b00068f9a955f01202ae4b&"}">
-                        <div><h1 style="font-size:34px">${artistName}</h1><p>${artistTracks.length} треков</p></div>
+        let html = `<div class="artist-page">
+            <button class="back-btn" id="backBtn"><i class="fas fa-arrow-left"></i> Назад</button>
+            <div class="artist-hero">
+                <img class="artist-banner" src="${avatarUrl}" onerror="this.src='https://via.placeholder.com/1200x380'">
+                <div class="artist-overlay">
+                    <div class="artist-main">
+                        <img class="artist-avatar-big" src="${avatarUrl}" onerror="this.src='https://via.placeholder.com/130'">
+                        <div class="artist-info">
+                            <h1>${artistName}</h1>
+                            <div class="artist-actions">
+                                <button class="follow-btn ${isFollowing ? 'following' : ''}" id="followBtn">
+                                    <i class="fas ${isFollowing ? 'fa-check' : 'fa-plus'}"></i>
+                                    ${isFollowing ? 'Подписан' : 'Подписаться'}
+                                </button>
+                                <button class="listen-btn" id="listenAllBtn"><i class="fas fa-play"></i> Слушать всё</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="release-tabs">
-                        <button class="release-tab active" data-type="singles">Релизы</button>
-                        ${albums.length ? `<button class="release-tab" data-type="albums">Альбомы</button>` : ''}
-                        ${hasClips ? `<button class="release-tab" data-type="clips">Клипы</button>` : ''}
-                    </div>
-                    <div id="releaseContainer"></div>`;
+                </div>
+            </div>
+            <div class="artist-content">
+                <div class="release-tabs">
+                    <button class="release-tab active" data-type="singles">Релизы (${singles.length})</button>
+                    ${hasClips ? `<button class="release-tab" data-type="clips">Клипы</button>` : ''}
+                </div>
+                <div id="releaseContainer"></div>
+            </div>
+        </div>`;
+        
         document.getElementById('mainContent').innerHTML = html;
+        
+        document.getElementById('followBtn')?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleFollowArtist(artistName, document.getElementById('followBtn'));
+        });
+        document.getElementById('listenAllBtn')?.addEventListener('click', () => {
+            if (artistTracks.length > 0) playTrackById(artistTracks[0].id);
+        });
         
         function showSingles() {
             let list = `<div class="track-list">`;
             singles.forEach(t => {
-                const cover = trackCovers[t.title] || "https://cdn.discordapp.com/attachments/1291442583033348119/1509854044322140231/image_large_cc30e771-2330-4418-bf81-27169fcd384e.png?ex=6a1ab0a7&is=6a195f27&hm=c59c0916277cb83fb5aff12741971134a2d9bb5e90b00068f9a955f01202ae4b&";
-                list += `<div class="track-item" data-track-id="${t.id}"><div class="track-info"><img class="track-cover-img" src="${cover}"><div><div class="track-title">${t.title}</div></div></div><div class="track-stats"><i class="fas fa-play-circle"></i> ${t.plays}</div></div>`;
+                list += renderTrackItem(t, true, true);
             });
             list += `</div>`;
             document.getElementById('releaseContainer').innerHTML = list;
             attachEvents();
         }
         
-        function showAlbums() {
-            let albumHtml = `<div class="artists-grid">`;
-            albums.forEach(alb => {
-                albumHtml += `<div class="artist-card" data-album="${alb}"><img class="track-cover-img" src="https://cdn.discordapp.com/attachments/1291442583033348119/1509854044322140231/image_large_cc30e771-2330-4418-bf81-27169fcd384e.png?ex=6a1ab0a7&is=6a195f27&hm=c59c0916277cb83fb5aff12741971134a2d9bb5e90b00068f9a955f01202ae4b&" style="width:100px;height:100px;margin:0 auto 12px;border-radius:20px;"><div class="artist-name">${alb}</div></div>`;
-            });
-            albumHtml += `</div>`;
-            document.getElementById('releaseContainer').innerHTML = albumHtml;
-            document.querySelectorAll('[data-album]').forEach(el => {
-                el.addEventListener('click', () => {
-                    const albumName = el.dataset.album;
-                    const albumTracks = tracksData.filter(t => t.album === albumName).map(t => getTrackWithPlays(t));
-                    let tracksHtml = `<div class="track-list">`;
-                    albumTracks.forEach(tr => {
-                        const cover = trackCovers[tr.title] || "https://cdn.discordapp.com/attachments/1291442583033348119/1509854044322140231/image_large_cc30e771-2330-4418-bf81-27169fcd384e.png?ex=6a1ab0a7&is=6a195f27&hm=c59c0916277cb83fb5aff12741971134a2d9bb5e90b00068f9a955f01202ae4b&";
-                        tracksHtml += `<div class="track-item" data-track-id="${tr.id}"><div class="track-info"><img class="track-cover-img" src="${cover}"><div><div class="track-title">${tr.title}</div><div class="artist-names">${tr.artist.split(',').map(a => `<span class="artist-chip" data-artist="${a.trim()}">${a.trim()}</span>`).join(', ')}</div></div></div></div>`;
-                    });
-                    tracksHtml += `</div><button class="back-btn" id="backToProfile" style="margin-top:20px"><i class="fas fa-arrow-left"></i> К артисту</button>`;
-                    document.getElementById('releaseContainer').innerHTML = tracksHtml;
-                    attachEvents();
-                    document.getElementById('backToProfile')?.addEventListener('click', () => showArtistProfile(artistName));
-                });
-            });
-        }
-        
         function showClips() {
             const clip = artistClips[artistName];
             if (!clip) return;
-            let clipsHtml = `<div class="clips-grid">
-                <div class="clip-card" data-url="${clip.url}">
-                    <div class="clip-thumb"><i class="fas fa-video"></i></div>
-                    <div class="clip-title">${clip.title}</div>
-                </div>
-            </div>`;
+            let clipsHtml = `<div class="clips-grid"><div class="clip-card" data-url="${clip.url}"><div class="clip-thumb"><i class="fas fa-video"></i></div><div class="clip-title">${clip.title}</div></div></div>`;
             document.getElementById('releaseContainer').innerHTML = clipsHtml;
             document.querySelectorAll('.clip-card').forEach(card => {
                 card.addEventListener('click', () => openClip(card.dataset.url));
@@ -922,23 +1079,40 @@
                 document.querySelectorAll('.release-tab').forEach(t => t.classList.remove('active'));
                 tab.classList.add('active');
                 if (tab.dataset.type === 'singles') showSingles();
-                else if (tab.dataset.type === 'albums') showAlbums();
                 else if (tab.dataset.type === 'clips') showClips();
             });
         });
         document.getElementById('backBtn')?.addEventListener('click', () => {
-            window.currentArtistName = null;
-            renderArtists();
+            const activePage = document.querySelector('.nav-btn.active')?.dataset.page;
+            if (activePage === 'subscriptions') renderSubscriptions();
+            else renderArtists();
         });
         attachEvents();
     }
 
     function attachEvents() {
         document.querySelectorAll('.track-item').forEach(el => {
-            el.addEventListener('click', (e) => { e.stopPropagation(); const id = el.dataset.trackId; if (id) playTrackById(parseInt(id)); });
+            el.addEventListener('click', (e) => {
+                if (e.target.closest('.fav-btn')) return;
+                const id = el.dataset.trackId;
+                if (id) playTrackById(parseInt(id));
+            });
+        });
+        document.querySelectorAll('.fav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const trackId = parseInt(btn.dataset.fav);
+                toggleFavorite(trackId, btn);
+                const activePage = document.querySelector('.nav-btn.active')?.dataset.page;
+                if (activePage === 'library') renderLibrary();
+            });
         });
         document.querySelectorAll('.artist-chip').forEach(btn => {
-            btn.addEventListener('click', (e) => { e.stopPropagation(); const artist = btn.dataset.artist; if (artist) showArtistProfile(artist); });
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const artist = btn.dataset.artist;
+                if (artist) showArtistProfile(artist);
+            });
         });
     }
 
@@ -947,14 +1121,11 @@
         btn.addEventListener('click', () => {
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            if (btn.dataset.page === 'charts') {
-                window.currentArtistName = null;
-                renderCharts();
-            }
-            if (btn.dataset.page === 'artists') {
-                window.currentArtistName = null;
-                renderArtists();
-            }
+            const page = btn.dataset.page;
+            if (page === 'charts') renderCharts();
+            if (page === 'artists') renderArtists();
+            if (page === 'subscriptions') renderSubscriptions();
+            if (page === 'library') renderLibrary();
         });
     });
 
@@ -980,7 +1151,6 @@
     document.getElementById('nextBtn').addEventListener('click', nextTrack);
     audio.addEventListener('ended', nextTrack);
 
-    // Инициализация глобального хранилища и запуск
     loadGlobalPlays();
     renderCharts();
 </script>
