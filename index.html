@@ -13,48 +13,99 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        body {
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: #0a0a0a;
-            color: #ededed;
-            overflow: hidden;
+        :root {
+            --accent: #e31c25;
+            --accent-2: #ff7a45;
+            --glass-bg: rgba(20, 20, 24, 0.55);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-highlight: rgba(255, 255, 255, 0.12);
         }
 
-        ::-webkit-scrollbar {
-            width: 5px;
+        html, body { height: 100%; }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #050507;
+            color: #ededed;
+            overflow: hidden;
+            position: relative;
         }
-        ::-webkit-scrollbar-track {
-            background: #151515;
+
+        /* ====== Анимированный фон (blobs под стеклом) ====== */
+        .bg-blobs {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
         }
+        .bg-blobs span {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.5;
+            animation: floatBlob 22s ease-in-out infinite;
+        }
+        .bg-blobs span:nth-child(1) {
+            width: 520px; height: 520px;
+            background: radial-gradient(circle, #e31c25, transparent 70%);
+            top: -180px; left: -120px;
+            animation-delay: 0s;
+        }
+        .bg-blobs span:nth-child(2) {
+            width: 460px; height: 460px;
+            background: radial-gradient(circle, #ff7a45, transparent 70%);
+            bottom: -160px; right: -100px;
+            animation-delay: -7s;
+        }
+        .bg-blobs span:nth-child(3) {
+            width: 380px; height: 380px;
+            background: radial-gradient(circle, #7b2ff7, transparent 70%);
+            top: 40%; left: 55%;
+            animation-delay: -14s;
+        }
+        @keyframes floatBlob {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33%      { transform: translate(60px, -40px) scale(1.1); }
+            66%      { transform: translate(-50px, 50px) scale(0.95); }
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb {
-            background: #e31c25;
+            background: linear-gradient(var(--accent), var(--accent-2));
             border-radius: 12px;
         }
 
         .app {
+            position: relative;
+            z-index: 1;
             display: flex;
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
         }
 
+        /* ====== Верхняя панель (liquid glass) ====== */
         .top-bar {
-            background: rgba(0, 0, 0, 0.96);
-            backdrop-filter: blur(14px);
+            background: var(--glass-bg);
+            backdrop-filter: blur(22px) saturate(160%);
+            -webkit-backdrop-filter: blur(22px) saturate(160%);
             padding: 12px 32px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid rgba(227, 28, 37, 0.4);
+            border-bottom: 1px solid var(--glass-border);
             z-index: 20;
             flex-wrap: wrap;
             gap: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 1px 0 var(--glass-highlight);
         }
 
         .logo {
             font-weight: 800;
             font-size: 1.6rem;
-            background: linear-gradient(130deg, #e31c25, #ff7a45);
+            background: linear-gradient(130deg, var(--accent), var(--accent-2));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -62,25 +113,27 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            animation: logoGlow 4s ease-in-out infinite;
+        }
+        @keyframes logoGlow {
+            0%, 100% { filter: drop-shadow(0 0 4px rgba(227,28,37,0.4)); }
+            50%      { filter: drop-shadow(0 0 14px rgba(227,28,37,0.8)); }
         }
         .logo i {
             background: none;
             -webkit-background-clip: unset;
             background-clip: unset;
-            color: #e31c25;
+            color: var(--accent);
             font-size: 1.7rem;
         }
 
-        .nav-group {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+        .nav-group { display: flex; gap: 12px; flex-wrap: wrap; }
 
         .nav-btn {
-            background: transparent;
-            border: none;
-            color: #bbbbbb;
+            position: relative;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--glass-border);
+            color: #cfcfcf;
             font-size: 0.9rem;
             font-weight: 600;
             padding: 8px 20px;
@@ -89,27 +142,39 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
-
-        .nav-btn.active {
-            background: #e31c25;
-            color: white;
-            box-shadow: 0 4px 12px rgba(227, 28, 37, 0.5);
+        .nav-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.15), transparent);
+            transform: translateX(-120%);
+            transition: transform 0.6s;
         }
-
+        .nav-btn:hover::before { transform: translateX(120%); }
         .nav-btn:hover:not(.active) {
-            background: #2a2a2a;
-            color: white;
+            color: #fff;
+            border-color: rgba(227, 28, 37, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(227, 28, 37, 0.25);
+        }
+        .nav-btn.active {
+            background: linear-gradient(130deg, var(--accent), var(--accent-2));
+            color: #fff;
+            border-color: transparent;
+            box-shadow: 0 6px 22px rgba(227, 28, 37, 0.55), inset 0 1px 0 rgba(255,255,255,0.4);
         }
 
         .main-content {
             flex: 1;
             overflow-y: auto;
-            padding: 26px 32px;
-            background: radial-gradient(ellipse at 20% 30%, #111111, #000000);
+            padding: 28px 32px 40px;
+            position: relative;
         }
 
+        /* ====== Заголовки секций ====== */
         .section-title {
             font-size: 2rem;
             font-weight: 800;
@@ -117,42 +182,118 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            border-left: 5px solid #e31c25;
             padding-left: 20px;
+            position: relative;
+        }
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 5px;
+            height: 70%;
+            border-radius: 8px;
+            background: linear-gradient(var(--accent), var(--accent-2));
+            box-shadow: 0 0 14px rgba(227,28,37,0.8);
         }
 
-        .track-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 48px;
+        /* ====== Анимации появления страниц ====== */
+        .page-anim { animation: none; }
+
+        /* Чарты — каскад строк */
+        @keyframes rowIn {
+            from { opacity: 0; transform: translateY(24px) scale(0.98); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
         }
+        .anim-charts .track-item {
+            opacity: 0;
+            animation: rowIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* Артисты — всплытие с масштабом */
+        @keyframes cardPop {
+            from { opacity: 0; transform: translateY(30px) scale(0.9); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .anim-artists .artist-card {
+            opacity: 0;
+            animation: cardPop 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* Подписки — мягкое вращение */
+        @keyframes softSpinIn {
+            from { opacity: 0; transform: rotate(-6deg) translateY(20px) scale(0.92); }
+            to   { opacity: 1; transform: rotate(0) translateY(0) scale(1); }
+        }
+        .anim-subs .artist-card {
+            opacity: 0;
+            animation: softSpinIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* Библиотека — слайд слева + пульс сердец */
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-40px); }
+            to   { opacity: 1; transform: translateX(0); }
+        }
+        .anim-library .track-item {
+            opacity: 0;
+            animation: slideInLeft 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        .anim-library .fav-btn.active i {
+            animation: heartPulse 1.6s ease-in-out infinite;
+        }
+        @keyframes heartPulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(227,28,37,0)); }
+            50%      { transform: scale(1.25); filter: drop-shadow(0 0 8px rgba(227,28,37,0.9)); }
+        }
+
+        /* Профиль артиста — подъём героя */
+        @keyframes heroIn {
+            from { opacity: 0; transform: translateY(40px) scale(0.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .anim-artist-page .artist-hero { animation: heroIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both; }
+        .anim-artist-page .release-tabs { animation: rowIn 0.6s 0.15s both; }
+        .anim-artist-page #releaseContainer { animation: rowIn 0.6s 0.25s both; }
+
+        /* ====== Строки треков (liquid glass) ====== */
+        .track-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 48px; }
 
         .track-item {
-            background: rgba(18, 18, 18, 0.85);
-            backdrop-filter: blur(4px);
+            background: var(--glass-bg);
+            backdrop-filter: blur(18px) saturate(150%);
+            -webkit-backdrop-filter: blur(18px) saturate(150%);
             border-radius: 20px;
             padding: 10px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            transition: all 0.2s ease;
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: transform 0.25s cubic-bezier(0.2,0.9,0.4,1.1), background 0.25s, box-shadow 0.25s, border-color 0.25s;
+            border: 1px solid var(--glass-border);
+            box-shadow: inset 0 1px 0 var(--glass-highlight), 0 4px 14px rgba(0,0,0,0.35);
             cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
-
+        .track-item::after {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 3px;
+            background: linear-gradient(var(--accent), var(--accent-2));
+            opacity: 0;
+            transition: opacity 0.25s;
+        }
         .track-item:hover {
-            background: #232323;
-            transform: translateX(6px);
-            border-color: rgba(227, 28, 37, 0.5);
+            background: rgba(40, 40, 48, 0.65);
+            transform: translateX(8px);
+            border-color: rgba(227, 28, 37, 0.55);
+            box-shadow: 0 10px 30px rgba(227, 28, 37, 0.28), inset 0 1px 0 var(--glass-highlight);
         }
+        .track-item:hover::after { opacity: 1; }
 
-        .track-info {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex: 3;
-        }
+        .track-info { display: flex; align-items: center; gap: 16px; flex: 3; }
 
         .track-cover-img {
             width: 52px;
@@ -160,8 +301,10 @@
             border-radius: 14px;
             object-fit: cover;
             background: #1e1e1e;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            transition: transform 0.3s;
         }
+        .track-item:hover .track-cover-img { transform: scale(1.08) rotate(-2deg); }
 
         .track-position {
             font-weight: 800;
@@ -172,24 +315,20 @@
             align-items: center;
             gap: 5px;
         }
-
         .pos-1 {
-            color: #e31c25;
-            text-shadow: 0 0 6px #e31c25;
+            color: var(--accent);
+            text-shadow: 0 0 12px var(--accent);
             font-size: 1.8rem;
+            animation: posPulse 2s ease-in-out infinite;
+        }
+        @keyframes posPulse {
+            0%, 100% { text-shadow: 0 0 8px rgba(227,28,37,0.6); }
+            50%      { text-shadow: 0 0 20px rgba(227,28,37,1); }
         }
 
-        .track-title {
-            font-weight: 700;
-            font-size: 1rem;
-        }
+        .track-title { font-weight: 700; font-size: 1rem; }
 
-        .artist-names {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 4px;
-        }
+        .artist-names { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
 
         .artist-chip {
             background: none;
@@ -201,26 +340,17 @@
             padding: 0;
             font-weight: 500;
         }
-
-        .artist-chip:hover {
-            color: #e31c25;
-            text-decoration: underline;
-        }
+        .artist-chip:hover { color: var(--accent); text-decoration: underline; }
 
         .track-stats {
             display: flex;
             align-items: center;
             gap: 20px;
-            color: #e31c25;
+            color: var(--accent);
             font-weight: 600;
             font-size: 0.9rem;
         }
-
-        .track-actions {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
+        .track-actions { display: flex; gap: 12px; align-items: center; }
 
         .fav-btn {
             background: none;
@@ -228,19 +358,18 @@
             color: #aaa;
             font-size: 1.3rem;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.25s;
             padding: 6px;
+            border-radius: 50%;
         }
-
         .fav-btn:hover {
-            color: #e31c25;
-            transform: scale(1.1);
+            color: var(--accent);
+            transform: scale(1.2);
+            background: rgba(227,28,37,0.12);
         }
+        .fav-btn.active { color: var(--accent); }
 
-        .fav-btn.active {
-            color: #e31c25;
-        }
-
+        /* ====== Карточки артистов ====== */
         .artists-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -249,25 +378,27 @@
         }
 
         .artist-card {
-            background: #101010;
+            background: var(--glass-bg);
+            backdrop-filter: blur(18px) saturate(150%);
+            -webkit-backdrop-filter: blur(18px) saturate(150%);
             border-radius: 28px;
             padding: 22px 12px;
             text-align: center;
             cursor: pointer;
-            transition: 0.25s ease;
-            border: 1px solid #252525;
+            transition: transform 0.3s cubic-bezier(0.2,0.9,0.4,1.1), background 0.3s, box-shadow 0.3s, border-color 0.3s;
+            border: 1px solid var(--glass-border);
             display: flex;
             flex-direction: column;
             align-items: center;
             word-break: break-word;
             position: relative;
+            box-shadow: inset 0 1px 0 var(--glass-highlight), 0 6px 20px rgba(0,0,0,0.4);
         }
-
         .artist-card:hover {
-            transform: translateY(-6px);
-            background: #1c1c1c;
-            border-color: #e31c25;
-            box-shadow: 0 14px 28px rgba(227, 28, 37, 0.2);
+            transform: translateY(-8px) scale(1.02);
+            background: rgba(40, 40, 48, 0.7);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(227, 28, 37, 0.3), inset 0 1px 0 var(--glass-highlight);
         }
 
         .artist-avatar {
@@ -276,7 +407,13 @@
             border-radius: 50%;
             object-fit: cover;
             margin-bottom: 14px;
-            border: 2px solid #e31c25;
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 0 0 rgba(227,28,37,0.6);
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+        .artist-card:hover .artist-avatar {
+            box-shadow: 0 0 0 6px rgba(227,28,37,0.25), 0 0 24px rgba(227,28,37,0.6);
+            transform: scale(1.04);
         }
 
         .artist-name {
@@ -294,69 +431,54 @@
             position: absolute;
             top: 12px;
             right: 12px;
-            background: #e31c25;
+            background: linear-gradient(130deg, var(--accent), var(--accent-2));
             color: white;
             border-radius: 20px;
             padding: 4px 10px;
             font-size: 0.7rem;
             font-weight: bold;
+            box-shadow: 0 4px 12px rgba(227,28,37,0.5);
         }
 
+        /* ====== Профиль артиста ====== */
         .artist-hero {
             position: relative;
             height: 380px;
             border-radius: 28px;
             overflow: hidden;
             margin-bottom: 30px;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
         }
-
-        .artist-banner {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
+        .artist-banner { width: 100%; height: 100%; object-fit: cover; }
         .artist-overlay {
             position: absolute;
             inset: 0;
-            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.4));
+            background: linear-gradient(to top, rgba(0,0,0,0.92), rgba(0,0,0,0.35));
             display: flex;
             align-items: flex-end;
             padding: 30px;
         }
-
-        .artist-main {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            flex-wrap: wrap;
-        }
-
+        .artist-main { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; }
         .artist-avatar-big {
             width: 130px;
             height: 130px;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            border: 4px solid rgba(255,255,255,0.9);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.6), 0 0 30px rgba(227,28,37,0.4);
         }
-
         .artist-info h1 {
             font-size: 42px;
             font-weight: 800;
             margin-bottom: 16px;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
-            background: linear-gradient(135deg, #fff, #e31c25);
+            background: linear-gradient(135deg, #fff, var(--accent));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            filter: drop-shadow(0 2px 10px rgba(0,0,0,0.6));
         }
-
-        .artist-actions {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
+        .artist-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
         .follow-btn, .listen-btn {
             border: none;
@@ -365,42 +487,36 @@
             font-weight: 700;
             cursor: pointer;
             font-size: 14px;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.2,0.9,0.4,1.1);
             display: flex;
             align-items: center;
             gap: 8px;
         }
-
         .follow-btn {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.12);
+            backdrop-filter: blur(12px);
             color: white;
             border: 1px solid rgba(255,255,255,0.3);
         }
-
         .listen-btn {
-            background: #e31c25;
+            background: linear-gradient(130deg, var(--accent), var(--accent-2));
             color: white;
-            box-shadow: 0 4px 12px rgba(227, 28, 37, 0.4);
+            box-shadow: 0 6px 18px rgba(227,28,37,0.5), inset 0 1px 0 rgba(255,255,255,0.4);
         }
-
-        .follow-btn:hover, .listen-btn:hover {
-            transform: translateY(-2px);
-        }
-
+        .follow-btn:hover, .listen-btn:hover { transform: translateY(-3px); }
+        .listen-btn:hover { box-shadow: 0 10px 26px rgba(227,28,37,0.7); }
         .follow-btn.following {
-            background: #e31c25;
-            border-color: #e31c25;
+            background: linear-gradient(130deg, var(--accent), var(--accent-2));
+            border-color: transparent;
         }
 
         .release-tabs {
             display: flex;
             gap: 24px;
             margin: 28px 0 24px 0;
-            border-bottom: 1px solid #2c2c2c;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
             flex-wrap: wrap;
         }
-
         .release-tab {
             background: none;
             border: none;
@@ -412,11 +528,7 @@
             transition: 0.2s;
             position: relative;
         }
-
-        .release-tab.active {
-            color: #e31c25;
-        }
-
+        .release-tab.active { color: var(--accent); }
         .release-tab.active::after {
             content: '';
             position: absolute;
@@ -424,7 +536,8 @@
             left: 0;
             right: 0;
             height: 2px;
-            background: #e31c25;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            box-shadow: 0 0 10px var(--accent);
         }
 
         .clips-grid {
@@ -433,38 +546,43 @@
             gap: 24px;
             margin-top: 16px;
         }
-
         .clip-card {
-            background: #111;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
             border-radius: 24px;
             padding: 18px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.25s;
             text-align: center;
-            border: 1px solid #2a2a2a;
+            border: 1px solid var(--glass-border);
+            box-shadow: inset 0 1px 0 var(--glass-highlight), 0 6px 18px rgba(0,0,0,0.4);
         }
-
         .clip-card:hover {
-            background: #202020;
-            border-color: #e31c25;
-            transform: scale(1.02);
+            background: rgba(40,40,48,0.7);
+            border-color: var(--accent);
+            transform: scale(1.03) translateY(-4px);
+            box-shadow: 0 18px 36px rgba(227,28,37,0.3);
         }
-
         .clip-thumb {
             width: 100%;
             aspect-ratio: 16/9;
-            background: #1e1e1e;
+            background: linear-gradient(135deg, #1a1a1e, #2a1a1e);
             border-radius: 18px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 3rem;
-            color: #e31c25;
+            color: var(--accent);
+            transition: transform 0.3s;
         }
+        .clip-card:hover .clip-thumb { transform: scale(1.05); }
 
+        /* ====== Плеер ====== */
         .player-bar {
-            background: #030303;
-            border-top: 1px solid #e31c25;
+            background: rgba(8, 8, 10, 0.7);
+            backdrop-filter: blur(24px) saturate(160%);
+            -webkit-backdrop-filter: blur(24px) saturate(160%);
+            border-top: 1px solid rgba(227, 28, 37, 0.35);
             padding: 12px 28px;
             display: flex;
             align-items: center;
@@ -472,15 +590,9 @@
             gap: 20px;
             flex-wrap: wrap;
             z-index: 15;
+            box-shadow: 0 -8px 32px rgba(0,0,0,0.6), inset 0 1px 0 var(--glass-highlight);
         }
-
-        .player-track {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            min-width: 200px;
-        }
-
+        .player-track { display: flex; align-items: center; gap: 14px; min-width: 200px; }
         .player-cover {
             width: 54px;
             height: 54px;
@@ -490,35 +602,23 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.6);
         }
+        .player-cover img { width: 100%; height: 100%; object-fit: cover; }
 
-        .player-cover img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .player-controls {
-            display: flex;
-            gap: 20px;
-        }
-
+        .player-controls { display: flex; gap: 20px; align-items: center; }
         .ctrl-btn {
             background: none;
             border: none;
             color: white;
             font-size: 1.7rem;
             cursor: pointer;
-            transition: 0.1s;
+            transition: 0.2s;
         }
-
-        .ctrl-btn:hover {
-            color: #e31c25;
-            transform: scale(1.05);
-        }
+        .ctrl-btn:hover { color: var(--accent); transform: scale(1.1); }
 
         .play-pause-main {
-            background: #e31c25;
+            background: linear-gradient(130deg, var(--accent), var(--accent-2));
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -526,27 +626,31 @@
             align-items: center;
             justify-content: center;
             font-size: 1.5rem;
+            box-shadow: 0 0 0 0 rgba(227,28,37,0.6);
+            animation: playPulse 2.4s infinite;
+        }
+        @keyframes playPulse {
+            0%   { box-shadow: 0 0 0 0 rgba(227,28,37,0.6); }
+            70%  { box-shadow: 0 0 0 14px rgba(227,28,37,0); }
+            100% { box-shadow: 0 0 0 0 rgba(227,28,37,0); }
         }
 
-        .progress-section {
-            flex: 2;
-            min-width: 180px;
-        }
-
+        .progress-section { flex: 2; min-width: 180px; }
         .progress-bar-bg {
-            background: #2c2c2c;
+            background: rgba(255,255,255,0.12);
             height: 5px;
             border-radius: 10px;
             cursor: pointer;
+            overflow: hidden;
         }
-
         .progress-fill {
-            background: #e31c25;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
             width: 0%;
             height: 100%;
             border-radius: 10px;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 10px rgba(227,28,37,0.8);
         }
-
         .time-stamps {
             display: flex;
             justify-content: space-between;
@@ -555,20 +659,18 @@
             color: #aaa;
         }
 
+        /* ====== Модалка ====== */
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.96);
             z-index: 1000;
             justify-content: center;
             align-items: center;
             backdrop-filter: blur(12px);
         }
-
         .modal-content {
             position: relative;
             width: 90%;
@@ -576,35 +678,36 @@
             background: #000;
             border-radius: 32px;
             overflow: hidden;
-            box-shadow: 0 0 32px rgba(227, 28, 37, 0.6);
+            box-shadow: 0 0 60px rgba(227, 28, 37, 0.6);
+            animation: modalIn 0.4s cubic-bezier(0.22, 1, 0.36, 1);
         }
-
-        .modal-content video {
-            width: 100%;
-            display: block;
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.92) translateY(20px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
         }
-
+        .modal-content video { width: 100%; display: block; }
         .close-modal {
             position: absolute;
-            top: 16px;
-            right: 20px;
-            background: #e31c25;
+            top: 16px; right: 20px;
+            background: var(--accent);
             color: white;
             border: none;
             font-size: 28px;
-            width: 44px;
-            height: 44px;
+            width: 44px; height: 44px;
             border-radius: 30px;
             cursor: pointer;
             z-index: 20;
+            transition: 0.2s;
         }
+        .close-modal:hover { transform: rotate(90deg) scale(1.1); }
 
+        /* ====== Тост ====== */
         .toast-msg {
             position: fixed;
             bottom: 110px;
             left: 50%;
-            transform: translateX(-50%);
-            background: #e31c25;
+            transform: translateX(-50%) translateY(20px);
+            background: linear-gradient(130deg, var(--accent), var(--accent-2));
             color: white;
             padding: 10px 24px;
             border-radius: 60px;
@@ -612,14 +715,16 @@
             font-size: 0.85rem;
             z-index: 200;
             opacity: 0;
-            transition: opacity 0.25s;
+            transition: opacity 0.25s, transform 0.25s;
             pointer-events: none;
             white-space: nowrap;
+            box-shadow: 0 10px 30px rgba(227,28,37,0.5);
         }
+        .toast-msg.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
         .back-btn {
-            background: rgba(227, 28, 37, 0.2);
-            border: 1px solid #e31c25;
+            background: rgba(227, 28, 37, 0.15);
+            border: 1px solid var(--accent);
             color: white;
             padding: 8px 24px;
             border-radius: 40px;
@@ -629,12 +734,12 @@
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            transition: 0.2s;
+            transition: 0.25s;
         }
-
         .back-btn:hover {
-            background: #e31c25;
-            box-shadow: 0 2px 12px rgba(227,28,37,0.6);
+            background: var(--accent);
+            box-shadow: 0 4px 20px rgba(227,28,37,0.7);
+            transform: translateX(-4px);
         }
 
         .empty-state {
@@ -642,6 +747,7 @@
             padding: 60px 20px;
             color: #888;
             font-size: 1.1rem;
+            animation: rowIn 0.6s both;
         }
 
         @media (max-width: 700px) {
@@ -659,6 +765,9 @@
     </style>
 </head>
 <body>
+<div class="bg-blobs">
+    <span></span><span></span><span></span>
+</div>
 <div class="app">
     <div class="top-bar">
         <div class="logo">
@@ -708,7 +817,7 @@
 <audio id="audioPlayer" preload="metadata"></audio>
 
 <script>
-    // ======================= АВАТАРКИ ТРЕКОВ (из вашего кода) =======================
+    // ======================= АВАТАРКИ ТРЕКОВ =======================
     const trackCovers = {
         "WERTYUOOP LASHARA": "images/wertyuoop_lashara.png",
         "WERTYUOOP LASHARA (КАРАОКЕ ВЕРСИЯ)": "images/Снимок экрана 2026-05-29 131815.png",
@@ -743,7 +852,6 @@
         "Yay zh nadeys nekak vsegda 1 chas (WERTY PHONK)": "images/werty_lashara_lox.png"
     };
 
-    // АВАТАРКИ АРТИСТОВ
     const artistAvatars = {
         "awesomeaudioproducer9521": "images/IMG_20260514_094607.jpg",
         "slava20222014": "images/slava.png",
@@ -751,7 +859,6 @@
         "yagudya1": "images/gugun.png"
     };
 
-    // КЛИПЫ
     const artistClips = {
         "awesomeaudioproducer9521": { url: "https://videotourl.com/videos/1780059304488-2f2c3782-7553-47e3-9a4b-09fdadd6bbcc.mp4", title: "Official clip" },
         "s44801140": { url: "https://videotourl.com/videos/1780057681507-5e49826e-899b-438d-be9d-a94116682ea5.mp4", title: "Новый клип" },
@@ -759,7 +866,6 @@
         "slava20222014": { url: "https://videotourl.com/videos/1780059304488-2f2c3782-7553-47e3-9a4b-09fdadd6bbcc.mp4", title: "Новый клип" }
     };
 
-    // БАЗА ТРЕКОВ
     const tracksData = [
         { id: 1, title: "WERTYUOOP LASHARA", artist: "awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780044349919-52d425e1-34e8-403e-9103-0f33237e42ab.mp3" },
         { id: 2, title: "WERTYUOOP LASHARA (КАРАОКЕ ВЕРСИЯ)", artist: "awesomeaudioproducer9521", src: "https://videotourl.com/audio/1780049081099-ab76be1c-ae47-4dd6-aa15-4c3136aef802.mp3" },
@@ -794,7 +900,6 @@
         { id: 31, title: "Лашара", artist: "s44801140", src: "https://videotourl.com/audio/1780047088484-04ec16ff-ee3c-419a-89e6-45c2e60737e9.mp3" }
     ];
 
-    // =============== ХРАНИЛИЩА ===============
     let globalPlaysMap = new Map();
     let favoriteTracks = JSON.parse(localStorage.getItem('favoriteTracks') || '[]');
     let followingArtists = JSON.parse(localStorage.getItem('followingArtists') || '[]');
@@ -822,8 +927,8 @@
         globalPlaysMap.set(trackId, (globalPlaysMap.get(trackId) || 0) + 1);
         saveGlobalPlays();
         const toast = document.getElementById('toastMsg');
-        toast.style.opacity = '1';
-        setTimeout(() => toast.style.opacity = '0', 1200);
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 1400);
         const activePage = document.querySelector('.nav-btn.active')?.dataset.page;
         if (activePage === 'charts') renderCharts();
         else if (activePage === 'library') renderLibrary();
@@ -900,7 +1005,6 @@
     function nextTrack() { let n = currentTrackId + 1; if (n > tracksData.length) n = 1; playTrackById(n); }
     function prevTrack() { let p = currentTrackId - 1; if (p < 1) p = tracksData.length; playTrackById(p); }
 
-    // Модалка
     const modal = document.getElementById('videoModal');
     const modalVideo = document.getElementById('modalVideo');
     function openClip(url) { if (!url) return; modalVideo.src = url; modal.style.display = 'flex'; modalVideo.play().catch(e => console.log); }
@@ -908,7 +1012,12 @@
     document.getElementById('closeModalBtn').addEventListener('click', closeModal);
     window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-    // Рендеры
+    // ====== Рендер с анимацией ======
+    function setPageAnim(animClass) {
+        const mc = document.getElementById('mainContent');
+        mc.className = 'main-content ' + animClass;
+    }
+
     function renderTrackItem(track, showPlays = true, showFavorite = true) {
         const cover = trackCovers[track.title] || "https://via.placeholder.com/52";
         const isFav = favoriteTracks.includes(track.id);
@@ -928,6 +1037,7 @@
     }
 
     function renderCharts() {
+        setPageAnim('anim-charts');
         const sorted = getAllTracksWithPlays().sort((a,b) => b.plays - a.plays);
         let html = `<div class="section-title"><i class="fas fa-fire"></i> Реальный Топ</div><div class="track-list">`;
         sorted.forEach((track, idx) => {
@@ -935,7 +1045,7 @@
             const medal = pos === 1 ? '<i class="fas fa-crown"></i> ' : (pos === 2 ? '<i class="fas fa-medal"></i> ' : (pos === 3 ? '<i class="fas fa-star"></i> ' : ''));
             const cover = trackCovers[track.title] || "https://via.placeholder.com/52";
             const isFav = favoriteTracks.includes(track.id);
-            html += `<div class="track-item" data-track-id="${track.id}">
+            html += `<div class="track-item" data-track-id="${track.id}" style="animation-delay:${Math.min(idx*35, 700)}ms">
                 <div class="track-info">
                     <img class="track-cover-img" src="${cover}" onerror="this.src='https://via.placeholder.com/52'">
                     <span class="track-position ${pos===1?'pos-1':''}">${medal}${pos}</span>
@@ -956,12 +1066,13 @@
     }
 
     function renderArtists() {
+        setPageAnim('anim-artists');
         const artists = getAllArtists();
         let html = `<div class="section-title"><i class="fas fa-users"></i> Все артисты</div><div class="artists-grid">`;
-        artists.forEach(artist => {
+        artists.forEach((artist, idx) => {
             const avatar = artistAvatars[artist] || "https://via.placeholder.com/120";
             const isFollowing = followingArtists.includes(artist);
-            html += `<div class="artist-card" data-artist="${artist}">
+            html += `<div class="artist-card" data-artist="${artist}" style="animation-delay:${Math.min(idx*50, 600)}ms">
                         ${isFollowing ? '<div class="artist-follow-badge"><i class="fas fa-check"></i></div>' : ''}
                         <img class="artist-avatar" src="${avatar}" onerror="this.src='https://via.placeholder.com/120'">
                         <div class="artist-name">${artist}</div>
@@ -975,14 +1086,15 @@
     }
 
     function renderSubscriptions() {
+        setPageAnim('anim-subs');
         if (followingArtists.length === 0) {
-            document.getElementById('mainContent').innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>У вас пока нет подписок<br><small>Подпишитесь на артистов на вкладке "Артисты"</small></div>`;
+            document.getElementById('mainContent').innerHTML = `<div class="empty-state"><i class="fas fa-bell-slash" style="font-size: 48px; margin-bottom: 16px; display: block; color:var(--accent);"></i>У вас пока нет подписок<br><small>Подпишитесь на артистов на вкладке "Артисты"</small></div>`;
             return;
         }
         let html = `<div class="section-title"><i class="fas fa-bell"></i> Ваши подписки</div><div class="artists-grid">`;
-        followingArtists.forEach(artist => {
+        followingArtists.forEach((artist, idx) => {
             const avatar = artistAvatars[artist] || "https://via.placeholder.com/120";
-            html += `<div class="artist-card" data-artist="${artist}">
+            html += `<div class="artist-card" data-artist="${artist}" style="animation-delay:${Math.min(idx*60, 500)}ms">
                         <img class="artist-avatar" src="${avatar}" onerror="this.src='https://via.placeholder.com/120'">
                         <div class="artist-name">${artist}</div>
                     </div>`;
@@ -995,14 +1107,27 @@
     }
 
     function renderLibrary() {
+        setPageAnim('anim-library');
         const favTracks = tracksData.filter(t => favoriteTracks.includes(t.id)).map(t => getTrackWithPlays(t));
         if (favTracks.length === 0) {
-            document.getElementById('mainContent').innerHTML = `<div class="empty-state"><i class="fas fa-heart-broken" style="font-size: 48px; margin-bottom: 16px; display: block;"></i>Нет добавленных треков<br><small>Добавляйте треки в избранное ❤️</small></div>`;
+            document.getElementById('mainContent').innerHTML = `<div class="empty-state"><i class="fas fa-heart-broken" style="font-size: 48px; margin-bottom: 16px; display: block; color:var(--accent);"></i>Нет добавленных треков<br><small>Добавляйте треки в избранное ❤️</small></div>`;
             return;
         }
         let html = `<div class="section-title"><i class="fas fa-library"></i> Моя музыка (${favTracks.length})</div><div class="track-list">`;
-        favTracks.forEach(track => {
-            html += renderTrackItem(track, true, true);
+        favTracks.forEach((track, idx) => {
+            html += `<div class="track-item" data-track-id="${track.id}" style="animation-delay:${Math.min(idx*45, 600)}ms">
+                <div class="track-info">
+                    <img class="track-cover-img" src="${trackCovers[track.title] || 'https://via.placeholder.com/52'}" onerror="this.src='https://via.placeholder.com/52'">
+                    <div>
+                        <div class="track-title">${track.title}</div>
+                        <div class="artist-names">${track.artist.split(',').map(a => `<button class="artist-chip" data-artist="${a.trim()}">${a.trim()}</button>`).join(', ')}</div>
+                    </div>
+                </div>
+                <div class="track-actions">
+                    <div class="track-stats"><i class="fas fa-headphones"></i> ${track.plays}</div>
+                    <button class="fav-btn active" data-fav="${track.id}"><i class="fas fa-heart"></i></button>
+                </div>
+            </div>`;
         });
         html += `</div>`;
         document.getElementById('mainContent').innerHTML = html;
@@ -1010,6 +1135,7 @@
     }
 
     function showArtistProfile(artistName) {
+        setPageAnim('anim-artist-page');
         const artistTracks = getTracksByArtist(artistName);
         const singles = artistTracks.filter(t => !t.album);
         const hasClips = !!artistClips[artistName];
@@ -1057,8 +1183,20 @@
         
         function showSingles() {
             let list = `<div class="track-list">`;
-            singles.forEach(t => {
-                list += renderTrackItem(t, true, true);
+            singles.forEach((t, idx) => {
+                list += `<div class="track-item" data-track-id="${t.id}" style="animation-delay:${Math.min(idx*35, 500)}ms">
+                    <div class="track-info">
+                        <img class="track-cover-img" src="${trackCovers[t.title] || 'https://via.placeholder.com/52'}" onerror="this.src='https://via.placeholder.com/52'">
+                        <div>
+                            <div class="track-title">${t.title}</div>
+                            <div class="artist-names">${t.artist.split(',').map(a => `<button class="artist-chip" data-artist="${a.trim()}">${a.trim()}</button>`).join(', ')}</div>
+                        </div>
+                    </div>
+                    <div class="track-actions">
+                        <div class="track-stats"><i class="fas fa-headphones"></i> ${t.plays}</div>
+                        <button class="fav-btn ${favoriteTracks.includes(t.id) ? 'active' : ''}" data-fav="${t.id}"><i class="${favoriteTracks.includes(t.id) ? 'fas' : 'far'} fa-heart"></i></button>
+                    </div>
+                </div>`;
             });
             list += `</div>`;
             document.getElementById('releaseContainer').innerHTML = list;
@@ -1118,7 +1256,6 @@
         });
     }
 
-    // Навигация
     document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
