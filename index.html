@@ -763,6 +763,173 @@
             .artists-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
         }
 
+
+        /* ===== Album collection: dedicated visual language ===== */
+        .album-catalog-heading {
+            max-width: 1180px; margin: 8px 0 42px; align-items:flex-end;
+            padding: 8px 0 28px; border-bottom:1px solid rgba(255,255,255,.09);
+        }
+        .album-catalog-heading .eyebrow { color:#ff7188; letter-spacing:.2em; }
+        .album-catalog-heading h1 {
+            font-size:clamp(2.7rem,6.5vw,5.2rem); line-height:.98; letter-spacing:-.075em;
+            font-weight:900; margin:0 0 15px; text-shadow:0 8px 35px rgba(0,0,0,.3);
+        }
+        .album-catalog-heading h1 span { color:var(--accent); }
+        .album-catalog-heading p { max-width:470px; color:rgba(255,255,255,.56); font-size:.96rem; line-height:1.6; }
+        .album-catalog-heading .catalog-count {
+            min-width:112px; padding:17px 20px; border-radius:18px;
+            border:1px solid rgba(255,255,255,.1); background:linear-gradient(145deg,rgba(255,255,255,.075),rgba(255,255,255,.015));
+        }
+        .album-catalog-heading .catalog-count strong { font-size:2.7rem; color:#fff; }
+        .album-section-caption {
+            max-width:1180px; display:flex; align-items:center; gap:15px; margin:0 0 18px;
+            color:rgba(255,255,255,.43); font-size:.68rem; font-weight:800; letter-spacing:.19em;
+        }
+        .album-section-caption i { color:rgba(255,255,255,.2); }
+        .albums-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(245px,290px)); gap:24px; max-width:1180px; }
+        .album-card {
+            position:relative; padding:13px; overflow:hidden; border-radius:22px; cursor:pointer;
+            background:linear-gradient(150deg,rgba(32,32,43,.96),rgba(13,14,20,.98));
+            border:1px solid rgba(255,255,255,.085);
+            box-shadow:0 15px 40px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.055);
+            transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .35s,box-shadow .35s;
+            animation:albumCardEnter .65s cubic-bezier(.2,.8,.2,1) both;
+            animation-delay:calc(var(--album-index,0) * 90ms);
+        }
+        @keyframes albumCardEnter { from {opacity:0;transform:translateY(22px) scale(.975)} to {opacity:1;transform:translateY(0) scale(1)} }
+        .album-card::before {
+            content:"";position:absolute;inset:0;pointer-events:none;opacity:0;
+            background:radial-gradient(circle at 50% 0%,rgba(255,61,103,.14),transparent 65%);
+            transition:opacity .35s;
+        }
+        .album-card:hover,.album-card:focus-visible {
+            transform:translateY(-8px);border-color:rgba(255,83,117,.48);
+            box-shadow:0 24px 55px rgba(0,0,0,.38),0 0 0 1px rgba(255,70,105,.08);
+            outline:none;
+        }
+        .album-card:hover::before { opacity:1; }
+        .album-card-visual {
+            position:relative;aspect-ratio:1;overflow:hidden;border-radius:15px;
+            background:linear-gradient(135deg,#252032,#101119);
+            box-shadow:0 10px 24px rgba(0,0,0,.28);
+        }
+        .album-art { display:block;width:100%;height:100%;object-fit:cover;transition:transform .65s cubic-bezier(.2,.8,.2,1),filter .5s; }
+        .album-card:hover .album-art { transform:scale(1.055);filter:saturate(1.12); }
+        .album-card-glow {
+            position:absolute;inset:35% -20% -35%;pointer-events:none;
+            background:radial-gradient(ellipse,rgba(255,45,94,.36),transparent 65%);mix-blend-mode:screen;
+        }
+        .album-card-tag {
+            position:absolute;top:13px;left:13px;padding:8px 11px;border-radius:30px;
+            color:#fff;background:rgba(9,10,16,.68);border:1px solid rgba(255,255,255,.17);
+            backdrop-filter:blur(12px);font-size:.61rem;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+        }
+        .album-card-tag i { color:#ff6b87;margin-right:5px; }
+        .album-open {
+            position:absolute;right:15px;bottom:15px;width:50px;height:50px;border-radius:50%;
+            display:grid;place-items:center;color:#fff;font-size:1rem;
+            background:linear-gradient(135deg,#ff315d,#d91c48);
+            border:1px solid rgba(255,255,255,.25);box-shadow:0 8px 24px rgba(215,24,70,.42);
+            transform:translateY(8px);opacity:.88;transition:transform .3s,opacity .3s;
+        }
+        .album-card:hover .album-open { transform:translateY(0) scale(1.06);opacity:1; }
+        .album-card-copy { position:relative;padding:17px 5px 7px; }
+        .album-card-meta { display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;color:rgba(255,255,255,.42);font-size:.62rem;font-weight:800;letter-spacing:.13em; }
+        .album-card-copy h3 { margin:0 0 7px;color:#fff;font-size:1.06rem;font-weight:850;letter-spacing:-.035em;line-height:1.25; }
+        .album-card-copy p { margin:0;color:rgba(255,255,255,.52);font-size:.78rem; }
+        .album-card-copy .artist-chip { padding:0;background:none;border:0;color:rgba(255,255,255,.58);font-size:.76rem; }
+        .album-card-copy .artist-chip:hover { color:#ff7188; }
+
+        .album-detail { max-width:1180px;margin:0 auto; }
+        .album-detail-topline { display:flex;justify-content:space-between;align-items:center;margin:0 0 18px; }
+        .album-detail-topline .back-btn { margin:0;border-color:rgba(255,255,255,.13);background:rgba(255,255,255,.055);color:rgba(255,255,255,.85); }
+        .album-detail-topline .back-btn:hover { background:var(--accent);border-color:var(--accent); }
+        .album-detail-kicker { color:rgba(255,255,255,.35);font-size:.64rem;font-weight:800;letter-spacing:.17em; }
+        .album-detail-kicker i { color:#ff6581;margin-right:7px; }
+        .album-hero {
+            position:relative;min-height:390px;overflow:hidden;border-radius:26px;
+            border:1px solid rgba(255,255,255,.11);isolation:isolate;
+            background:#11121a;box-shadow:0 25px 65px rgba(0,0,0,.3);
+        }
+        .album-hero-bg {
+            position:absolute;inset:-8%;width:116%;height:116%;object-fit:cover;
+            filter:blur(35px) saturate(1.2);opacity:.42;transform:scale(1.1);z-index:-2;
+        }
+        .album-hero-shade {
+            position:absolute;inset:0;z-index:-1;
+            background:linear-gradient(105deg,rgba(9,10,16,.97) 0%,rgba(9,10,16,.83) 48%,rgba(9,10,16,.38) 100%),
+                       linear-gradient(0deg,rgba(9,10,16,.5),transparent 60%);
+        }
+        .album-hero-content { display:flex;align-items:center;gap:clamp(28px,5vw,62px);padding:clamp(28px,5vw,58px);min-height:390px; }
+        .album-cover-stage { position:relative;flex:0 0 auto; }
+        .album-detail-cover {
+            display:block;width:clamp(190px,25vw,285px);aspect-ratio:1;object-fit:cover;border-radius:17px;
+            border:1px solid rgba(255,255,255,.18);box-shadow:0 28px 65px rgba(0,0,0,.58),0 0 45px rgba(255,49,88,.13);
+            transform:rotate(-2deg);transition:transform .5s;
+        }
+        .album-hero:hover .album-detail-cover { transform:rotate(0) translateY(-4px); }
+        .album-cover-reflection {
+            position:absolute;left:12%;right:12%;bottom:-17px;height:18px;border-radius:50%;
+            background:rgba(0,0,0,.45);filter:blur(13px);
+        }
+        .album-detail-info { max-width:620px; }
+        .album-detail-info .eyebrow { color:#ff8297;font-size:.67rem;letter-spacing:.18em;margin-bottom:15px; }
+        .album-detail-info h1 {
+            color:#fff;font-size:clamp(2rem,4.7vw,4.2rem);font-weight:950;line-height:.98;
+            letter-spacing:-.07em;margin:0 0 18px;text-wrap:balance;
+            text-shadow:0 8px 32px rgba(0,0,0,.4);
+        }
+        .album-detail-artist { display:flex;align-items:center;gap:9px;color:#ff7188;margin-bottom:13px; }
+        .album-detail-artist .artist-chip { color:#fff;font-weight:750;font-size:.9rem; }
+        .album-detail-info p { color:rgba(255,255,255,.58);font-size:.82rem;margin:0 0 23px; }
+        .album-detail-info p span { padding:0 8px;color:#ff7188; }
+        .album-detail-actions { display:flex;align-items:center;gap:18px;flex-wrap:wrap; }
+        .album-detail-actions .listen-btn {
+            min-height:48px;padding:0 24px;border:0;border-radius:30px;
+            background:linear-gradient(120deg,#ff315d,#dc1d4b);color:white;
+            box-shadow:0 9px 26px rgba(228,32,77,.3);font-weight:800;
+            transition:transform .25s,box-shadow .25s;
+        }
+        .album-detail-actions .listen-btn:hover { transform:translateY(-3px);box-shadow:0 14px 32px rgba(228,32,77,.42); }
+        .album-detail-note { color:rgba(255,255,255,.42);font-size:.72rem; }
+        .album-detail-note i { margin-right:6px;color:#ff7188; }
+        .album-hero-index { position:absolute;right:25px;bottom:20px;color:rgba(255,255,255,.45);font-size:.72rem;font-weight:800;letter-spacing:.12em; }
+        .album-hero-index span { color:#ff7188;padding:0 5px; }
+        .album-track-heading { display:flex;justify-content:space-between;align-items:flex-end;margin:42px 0 18px; }
+        .album-track-heading .eyebrow { margin-bottom:8px; }
+        .album-track-heading h2 { margin:0;color:#fff;font-size:clamp(1.55rem,3vw,2rem);font-weight:900;letter-spacing:-.05em; }
+        .album-track-heading>span { color:rgba(255,255,255,.38);font-size:.65rem;font-weight:800;letter-spacing:.15em; }
+        .album-tracklist-wrap { padding:17px 20px 2px;border-radius:21px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.065); }
+        .album-tracklist-label { display:flex;justify-content:space-between;padding:0 12px 13px;color:rgba(255,255,255,.35);font-size:.61rem;font-weight:800;letter-spacing:.13em; }
+        .album-tracklist-label i { margin-right:6px;color:#ff7188; }
+        .album-tracklist-wrap .track-list { margin-bottom:16px; }
+        .album-tracklist-wrap .track-item { border-radius:14px; }
+        .album-tracklist-wrap .track-item:hover { transform:translateX(3px); }
+        @media(max-width:700px) {
+            .album-catalog-heading { margin:0 0 28px;padding-bottom:22px; }
+            .album-catalog-heading h1 { font-size:3rem; }
+            .album-catalog-heading p { font-size:.83rem; }
+            .album-catalog-heading .catalog-count { min-width:76px;padding:12px; }
+            .album-catalog-heading .catalog-count strong { font-size:2rem; }
+            .albums-grid { grid-template-columns:repeat(2,minmax(0,1fr));gap:13px; }
+            .album-card { padding:9px;border-radius:17px; }
+            .album-card-visual { border-radius:12px; }
+            .album-card-tag { top:8px;left:8px;padding:6px 8px;font-size:.52rem; }
+            .album-open { width:39px;height:39px;right:9px;bottom:9px; }
+            .album-card-copy { padding:13px 3px 5px; }
+            .album-card-copy h3 { font-size:.87rem; }
+            .album-card-meta { font-size:.55rem; }
+            .album-detail-topline { align-items:flex-start;gap:10px; }
+            .album-detail-kicker { padding-top:11px;font-size:.52rem; }
+            .album-hero { border-radius:20px; }
+            .album-hero-content { flex-direction:column;align-items:flex-start;gap:25px;padding:25px 21px 48px; }
+            .album-detail-cover { width:min(62vw,225px); }
+            .album-detail-info h1 { font-size:2.45rem; }
+            .album-detail-note { display:none; }
+            .album-tracklist-wrap { padding:13px 10px 1px; }
+            .album-tracklist-label { padding:0 7px 10px;font-size:.53rem; }
+        }
+
     </style>
 </head>
 <body>
@@ -916,25 +1083,28 @@
 
     function renderAlbums() {
         setPageAnim('anim-artists');
-        const cards = albumsData.map(album => {
+        const cards = albumsData.map((album, index) => {
             const cover = trackCovers["WERTYUOOP LASHARA"];
-            return `<article class="album-card" data-album="${album.id}" tabindex="0" role="button" aria-label="Открыть альбом ${album.title}">
-                <div class="album-art-wrap">
+            return `<article class="album-card" data-album="${album.id}" tabindex="0" role="button" aria-label="Открыть альбом ${album.title}" style="--album-index:${index}">
+                <div class="album-card-visual">
                     <img class="album-art" src="${cover}" alt="Обложка ${album.title}" onerror="this.style.opacity='.15'">
+                    <div class="album-card-glow"></div>
+                    <span class="album-card-tag"><i class="fas fa-compact-disc"></i> ${album.type}</span>
                     <span class="album-open"><i class="fas fa-play"></i></span>
                 </div>
                 <div class="album-card-copy">
-                    <span class="eyebrow">${album.type} · ${album.year}</span>
+                    <div class="album-card-meta"><span>${album.year}</span><span>${album.trackIds.length} ТРЕКА</span></div>
                     <h3>${album.title}</h3>
-                    <p>${album.trackIds.length} трека · <button class="artist-chip" data-artist="${album.artist}">${album.artist}</button></p>
+                    <p><button class="artist-chip" data-artist="${album.artist}">${album.artist}</button></p>
                 </div>
             </article>`;
         }).join('');
         document.getElementById('mainContent').innerHTML = `
-            <section class="catalog-heading">
-                <div><span class="eyebrow">КАТАЛОГ МУЗЫКИ</span><h1>Альбомы</h1><p>Все релизы в одном месте</p></div>
-                <div class="catalog-count"><strong>${albumsData.length.toString().padStart(2, '0')}</strong><span>АЛЬБОМ</span></div>
+            <section class="catalog-heading album-catalog-heading">
+                <div><span class="eyebrow"><i class="fas fa-wave-square"></i> TRUSIKI MUSIC · КОЛЛЕКЦИЯ</span><h1>Альбомы<span>.</span></h1><p>Полные релизы, избранные треки и музыкальные истории.</p></div>
+                <div class="catalog-count"><strong>${albumsData.length.toString().padStart(2, '0')}</strong><span>РЕЛИЗОВ</span></div>
             </section>
+            <div class="album-section-caption"><span>ВСЯ КОЛЛЕКЦИЯ</span><i class="fas fa-grip-lines"></i></div>
             <div class="albums-grid">${cards}</div>`;
         document.querySelectorAll('.album-card').forEach(card => {
             const open = () => showAlbumProfile(card.dataset.album);
@@ -952,23 +1122,36 @@
         setPageAnim('anim-artist-page');
         document.getElementById('mainContent').innerHTML = `
             <section class="album-detail">
-                <button class="back-btn" id="albumBack"><i class="fas fa-arrow-left"></i> К альбомам</button>
+                <div class="album-detail-topline">
+                    <button class="back-btn" id="albumBack"><i class="fas fa-arrow-left"></i> Все альбомы</button>
+                    <span class="album-detail-kicker"><i class="fas fa-compact-disc"></i> СТРАНИЦА РЕЛИЗА</span>
+                </div>
                 <div class="album-hero">
                     <img src="${cover}" alt="" class="album-hero-bg">
                     <div class="album-hero-shade"></div>
                     <div class="album-hero-content">
-                        <img src="${cover}" alt="Обложка ${album.title}" class="album-detail-cover">
+                        <div class="album-cover-stage">
+                            <img src="${cover}" alt="Обложка ${album.title}" class="album-detail-cover">
+                            <span class="album-cover-reflection"></span>
+                        </div>
                         <div class="album-detail-info">
-                            <span class="eyebrow">${album.type.toUpperCase()} · ${album.year}</span>
+                            <span class="eyebrow"><i class="fas fa-sparkles"></i> ${album.type.toUpperCase()} · ${album.year}</span>
                             <h1>${album.title}</h1>
-                            <div class="artist-names"><button class="artist-chip" data-artist="awesomeaudioproducer9521">awesomeaudioproducer9521</button></div>
-                            <p>${albumTracks.length} трека · релиз в каталоге TRUSIKI MUSIC</p>
-                            <button class="listen-btn" id="playAlbum"><i class="fas fa-play"></i> Слушать альбом</button>
+                            <div class="album-detail-artist"><i class="fas fa-user-music"></i><button class="artist-chip" data-artist="${album.artist}">${album.artist}</button></div>
+                            <p>${albumTracks.length} трека <span>•</span> TRUSIKI MUSIC</p>
+                            <div class="album-detail-actions">
+                                <button class="listen-btn" id="playAlbum"><i class="fas fa-play"></i> Слушать альбом</button>
+                                <span class="album-detail-note"><i class="fas fa-headphones"></i> Полное погружение</span>
+                            </div>
                         </div>
                     </div>
+                    <div class="album-hero-index">01 <span>/</span> ${String(albumTracks.length).padStart(2, '0')}</div>
                 </div>
-                <div class="album-track-heading"><div><span class="eyebrow">ТРЕКЛИСТ</span><h2>Композиции</h2></div><span>${albumTracks.length} TRACKS</span></div>
-                <div class="track-list">${albumTracks.map((track, i) => renderTrackItem(track, true, true)).join('')}</div>
+                <div class="album-track-heading"><div><span class="eyebrow">СОДЕРЖАНИЕ РЕЛИЗА</span><h2>Треклист</h2></div><span>${String(albumTracks.length).padStart(2, '0')} ТРЕКА</span></div>
+                <div class="album-tracklist-wrap">
+                    <div class="album-tracklist-label"><span># &nbsp; НАЗВАНИЕ</span><span><i class="fas fa-headphones"></i> ПРОСЛУШИВАНИЯ</span></div>
+                    <div class="track-list">${albumTracks.map((track, i) => renderTrackItem(track, true, true)).join('')}</div>
+                </div>
             </section>`;
         document.getElementById('albumBack').addEventListener('click', renderAlbums);
         document.getElementById('playAlbum').addEventListener('click', () => { if (albumTracks.length) playTrackById(albumTracks[0].id); });
