@@ -1019,6 +1019,36 @@
         "Хватит булить": "images/изображение_2026-05-31_221537455.png",
         "Мам я хочу быть как Газан (У*бан ремикс)": "images/Снимок экрана 2026-05-29 134901.png",
         "Yay zh nadeys nekak vsegda 1 chas (WERTY PHONK)": "images/werty_lashara_lox.png"
+        ,
+        "Жеворж": "images/geforgealbum.png"
+        ,
+        "Жеворж (Speed Up)": "images/geforgealbum.png"
+        ,
+        "Жеворж (Slowed + Reverb)": "images/geforgealbum.png"
+        ,
+        "Жеворж (Nightcore Remix)": "images/geforgealbum.png"
+        ,
+        "Жеворж (Bass Boosted)": "images/geforgealbum.png"
+        ,
+        "Миша буллер": "images/geforgealbum.png"
+        ,
+        "Миша буллер (Speed Up)": "images/geforgealbum.png"
+        ,
+        "Миша буллер (Slowed + Reverb)": "images/geforgealbum.png"
+        ,
+        "Миша буллер (Nightcore Remix)": "images/geforgealbum.png"
+        ,
+        "Способка не работает": "images/geforgealbum.png"
+        ,
+        "Способка не работает 2.0": "images/geforgealbum.png"
+        ,
+        "Способка не работает (Speed Up)": "images/geforgealbum.png"
+        ,
+        "Способка не работает (Slowed + Reverb)": "images/geforgealbum.png"
+        ,
+        "Способка не работает (Nightcore Remix)": "images/geforgealbum.png"
+        ,
+        "Способка не работает (Remix)": "images/geforgealbum.png"
     };
 
     const artistAvatars = {
@@ -1278,7 +1308,8 @@
     const playPauseBtn = document.getElementById('playPauseBtn');
     const playerCoverIcon = document.getElementById('playerCoverIcon');
     function updatePlayerCover(trackTitle) {
-        const coverUrl = trackCovers[trackTitle];
+        const currentTrack = tracksData.find(t => t.title === trackTitle);
+        const coverUrl = trackCovers[trackTitle] || (currentTrack?.album === "zhevorzh" ? "images/geforgealbum.png" : null);
         if (coverUrl) playerCoverIcon.innerHTML = `<img src="${coverUrl}" alt="cover" onerror="this.parentElement.innerHTML='<i class=\'fas fa-headphones\' style=\'font-size:28px;color:#e31c25;\'></i>'">`;
         else playerCoverIcon.innerHTML = `<i class="fas fa-headphones" style="font-size: 28px; color:#e31c25;"></i>`;
     }
