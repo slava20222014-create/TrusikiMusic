@@ -9,7 +9,8 @@ const PORT = Number(process.env.PORT || 3000);
 const ROOT = __dirname;
 const DATA_FILE = process.env.DATA_FILE || path.join(ROOT, "data", "plays.json");
 
-const tracks = new Set(Array.from({ length: 15 }, (_, i) => i + 32));
+// Счётчики нужны для всех композиций сайта, а не только для нового альбома.
+const tracks = new Set(Array.from({ length: 46 }, (_, i) => i + 1));
 const mime = {
   ".html": "text/html; charset=utf-8",
   ".js": "text/javascript; charset=utf-8",
@@ -70,7 +71,7 @@ const server = http.createServer((req, res) => {
       return send(res, 200, { trackId: id, plays: stats.plays[String(id)] });
     } catch (error) {
       console.error("Cannot persist play count:", error);
-      return send(res, 500, { error: "Could not save statistics" });
+      return send(res, 500, { error: "Could not save statistics", code: error.code || "WRITE_FAILED", dataFile: DATA_FILE });
     }
   }
 
