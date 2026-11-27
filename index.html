@@ -1067,6 +1067,22 @@
         { id: 29, title: "Сосал понял", artist: "s44801140", src: "https://videotourl.com/audio/1780047053112-79ea80a8-0923-446b-8200-e7f1c72d8440.mp3" },
         { id: 30, title: "Yay zh nadeys nekak vsegda 1 chas (WERTY PHONK)", artist: "slava20222014", src: "music/Yay zh nadeys nekak vsegda 1 chas (WERTY PHONK).mp3" },
         { id: 31, title: "Лашара", artist: "s44801140", src: "https://videotourl.com/audio/1780047088484-04ec16ff-ee3c-419a-89e6-45c2e60737e9.mp3" }
+        ,
+        { id: 32, title: "Жеворж", artist: "slava20222014", album: "zhevorzh", src: "music/" + encodeURIComponent("Жеворж") + ".mp3" },
+        { id: 33, title: "Жеворж (Speed Up)", artist: "slava20222014", album: "zhevorzh", src: "music/" + encodeURIComponent("Жеворж (Speed Up)") + ".mp3" },
+        { id: 34, title: "Жеворж (Slowed + Reverb)", artist: "slava20222014", album: "zhevorzh", src: "music/" + encodeURIComponent("Жеворж (Slowed + Reverb)") + ".mp3" },
+        { id: 35, title: "Жеворж (Nightcore Remix)", artist: "slava20222014", album: "zhevorzh", src: "music/" + encodeURIComponent("Жеворж (Nightcore Remix)") + ".mp3" },
+        { id: 36, title: "Жеворж (Bass Boosted)", artist: "slava20222014", album: "zhevorzh", src: "music/" + encodeURIComponent("Жеворж (Bass Boosted)") + ".mp3" },
+        { id: 37, title: "Миша буллер", artist: "Не указан", album: "zhevorzh", src: "music/" + encodeURIComponent("Миша буллер") + ".mp3" },
+        { id: 38, title: "Миша буллер (Speed Up)", artist: "Не указан", album: "zhevorzh", src: "music/" + encodeURIComponent("Миша буллер (Speed Up)") + ".mp3" },
+        { id: 39, title: "Миша буллер (Slowed + Reverb)", artist: "Не указан", album: "zhevorzh", src: "music/" + encodeURIComponent("Миша буллер (Slowed + Reverb)") + ".mp3" },
+        { id: 40, title: "Миша буллер (Nightcore Remix)", artist: "Не указан", album: "zhevorzh", src: "music/" + encodeURIComponent("Миша буллер (Nightcore Remix)") + ".mp3" },
+        { id: 41, title: "Способка не работает", artist: "s44801140", album: "zhevorzh", src: "music/" + encodeURIComponent("Способка не работает") + ".mp3" },
+        { id: 42, title: "Способка не работает 2.0", artist: "s44801140, slava20222014", album: "zhevorzh", src: "music/" + encodeURIComponent("Способка не работает 2.0") + ".mp3" },
+        { id: 43, title: "Способка не работает (Speed Up)", artist: "s44801140", album: "zhevorzh", src: "music/" + encodeURIComponent("Способка не работает (Speed Up)") + ".mp3" },
+        { id: 44, title: "Способка не работает (Slowed + Reverb)", artist: "s44801140", album: "zhevorzh", src: "music/" + encodeURIComponent("Способка не работает (Slowed + Reverb)") + ".mp3" },
+        { id: 45, title: "Способка не работает (Nightcore Remix)", artist: "s44801140, slava20222014", album: "zhevorzh", src: "music/" + encodeURIComponent("Способка не работает (Nightcore Remix)") + ".mp3" },
+        { id: 46, title: "Способка не работает (Remix)", artist: "s44801140, yagudya1", album: "zhevorzh", src: "music/" + encodeURIComponent("Способка не работает (Remix)") + ".mp3" }
     ];
 
     // Альбомы — отдельная сущность, чтобы каталог можно было расширять.
@@ -1079,12 +1095,23 @@
             year: "2026",
             type: "Мини-альбом"
         }
+    
+        ,
+        {
+            id: "zhevorzh",
+            title: "Жеворж",
+            artist: "slava20222014",
+            trackIds: [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46],
+            cover: "images/geforgealbum.png",
+            year: "2026",
+            type: "Альбом"
+        }
     ];
 
     function renderAlbums() {
         setPageAnim('anim-artists');
         const cards = albumsData.map((album, index) => {
-            const cover = trackCovers["WERTYUOOP LASHARA"];
+            const cover = album.cover || trackCovers["WERTYUOOP LASHARA"];
             return `<article class="album-card" data-album="${album.id}" tabindex="0" role="button" aria-label="Открыть альбом ${album.title}" style="--album-index:${index}">
                 <div class="album-card-visual">
                     <img class="album-art" src="${cover}" alt="Обложка ${album.title}" onerror="this.style.opacity='.15'">
@@ -1118,7 +1145,7 @@
         const album = albumsData.find(a => a.id === albumId);
         if (!album) return;
         const albumTracks = album.trackIds.map(id => getTrackWithPlays(tracksData.find(t => t.id === id))).filter(Boolean);
-        const cover = trackCovers["WERTYUOOP LASHARA"];
+        const cover = album.cover || trackCovers["WERTYUOOP LASHARA"];
         setPageAnim('anim-artist-page');
         document.getElementById('mainContent').innerHTML = `
             <section class="album-detail">
@@ -1165,25 +1192,32 @@
     function saveFavorites() { localStorage.setItem('favoriteTracks', JSON.stringify(favoriteTracks)); }
     function saveFollowed() { localStorage.setItem('followingArtists', JSON.stringify(followingArtists)); }
 
-    function loadGlobalPlays() {
-        const saved = localStorage.getItem('trusiki_global_plays');
-        if (saved) {
-            try {
-                const parsed = JSON.parse(saved);
-                globalPlaysMap = new Map(Object.entries(parsed).map(([k, v]) => [parseInt(k), v]));
-            } catch(e) {}
+    async function loadGlobalPlays() {
+        try {
+            const response = await fetch("/api/plays");
+            if (!response.ok) throw new Error("Не удалось загрузить серверную статистику");
+            const data = await response.json();
+            globalPlaysMap = new Map(Object.entries(data.plays || {}).map(([k, v]) => [Number(k), Number(v)]));
+        } catch (error) {
+            console.error("Серверная статистика недоступна:", error);
+            tracksData.forEach(track => { if (!globalPlaysMap.has(track.id)) globalPlaysMap.set(track.id, 0); });
         }
-        tracksData.forEach(track => { if (!globalPlaysMap.has(track.id)) globalPlaysMap.set(track.id, 0); });
-        saveGlobalPlays();
     }
-    function saveGlobalPlays() {
-        const obj = {};
-        globalPlaysMap.forEach((v, k) => obj[k] = v);
-        localStorage.setItem('trusiki_global_plays', JSON.stringify(obj));
-    }
-    function incrementPlays(trackId) {
-        globalPlaysMap.set(trackId, (globalPlaysMap.get(trackId) || 0) + 1);
-        saveGlobalPlays();
+
+    async function incrementPlays(trackId) {
+        try {
+            const response = await fetch("/api/plays/" + trackId, { method: "POST" });
+            if (!response.ok) throw new Error("Не удалось сохранить прослушивание");
+            const data = await response.json();
+            globalPlaysMap.set(trackId, Number(data.plays));
+        } catch (error) {
+            console.error("Прослушивание не сохранено на сервере:", error);
+            const toast = document.getElementById('toastMsg');
+            toast.textContent = "Нет связи с сервером статистики";
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); toast.textContent = "+1 прослушивание"; }, 1800);
+            return;
+        }
         const toast = document.getElementById('toastMsg');
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 1400);
@@ -1191,6 +1225,13 @@
         if (activePage === 'charts') renderCharts();
         else if (activePage === 'library') renderLibrary();
         else if (activePage === 'subscriptions') renderSubscriptions();
+        else if (activePage === 'albums') {
+            const detail = document.querySelector('.album-detail');
+            if (detail) {
+                const album = albumsData.find(a => a.id === "zhevorzh");
+                if (album) showAlbumProfile(album.id);
+            }
+        }
     }
     function getTrackWithPlays(track) { return { ...track, plays: globalPlaysMap.get(track.id) || 0 }; }
     function getAllTracksWithPlays() { return tracksData.map(t => getTrackWithPlays(t)); }
@@ -1249,10 +1290,15 @@
         document.getElementById('playerTitle').innerText = track.title;
         document.getElementById('playerArtist').innerText = track.artist.split(',')[0].trim();
         updatePlayerCover(track.title);
-        audio.play().catch(e => console.log);
-        isPlaying = true;
-        playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
-        incrementPlays(track.id);
+        audio.play().then(() => {
+            isPlaying = true;
+            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            incrementPlays(track.id);
+        }).catch(error => {
+            console.error("Не удалось запустить аудио:", error);
+            isPlaying = false;
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+        });
     }
     function togglePlayPause() {
         if (!audio.src) { playTrackById(1); return; }
@@ -1549,8 +1595,7 @@
     document.getElementById('nextBtn').addEventListener('click', nextTrack);
     audio.addEventListener('ended', nextTrack);
 
-    loadGlobalPlays();
-    renderCharts();
+    loadGlobalPlays().finally(() => renderCharts());
 </script>
 </body>
 </html>
